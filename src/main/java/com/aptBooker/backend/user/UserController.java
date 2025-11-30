@@ -1,10 +1,14 @@
 package com.aptBooker.backend.user;
 
+import com.aptBooker.backend.user.dto.request.UserLoginDto;
+import com.aptBooker.backend.user.dto.request.UserRegistrationDto;
+import com.aptBooker.backend.user.dto.response.UserErrorDto;
+import com.aptBooker.backend.user.dto.response.UserDto;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -16,13 +20,21 @@ public class UserController {
 
     // User registration endpoint
     @PostMapping("/register")
-    public Object registerUser(@RequestParam String name, @RequestParam String email, @RequestParam String password) {
-        return userService.registerUser(name, email, password);
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
+        Object result = userService.registerUser(userRegistrationDto);
+        if (result instanceof UserErrorDto) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        }
+        return ResponseEntity.ok(result);
     }
 
     // User login endpoint
     @PostMapping("/login")
-    public Object loginUser(@RequestParam String email, @RequestParam String password) {
-        return userService.loginUser(email, password);
+    public ResponseEntity<?> loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
+        Object result = userService.loginUser(userLoginDto);
+        if (result instanceof UserErrorDto) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
+        }
+        return ResponseEntity.ok(result);
     }
 }

@@ -1,11 +1,11 @@
 package com.aptBooker.backend.user;
 
-import com.aptBooker.backend.user.dto.UserDto;
-import com.aptBooker.backend.user.dto.UserErrorDto;
+import com.aptBooker.backend.user.dto.response.UserDto;
+import com.aptBooker.backend.user.dto.response.UserErrorDto;
+import com.aptBooker.backend.user.dto.request.UserLoginDto;
+import com.aptBooker.backend.user.dto.request.UserRegistrationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.Mapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Optional;
 
@@ -20,7 +20,12 @@ public class UserService {
     }
 
     // user registration
-    public Object registerUser(String name, String email, String password){
+    public Object registerUser(UserRegistrationDto userRegistrationDto){
+
+        // extract user details from dto
+        String name = userRegistrationDto.getName();
+        String email = userRegistrationDto.getEmail();
+        String password = userRegistrationDto.getPassword();
 
         //check if user already exists, if not create new user
         if (!userRepository.existsByEmail(email)) {
@@ -49,7 +54,11 @@ public class UserService {
 
 
     //login user
-    public Object loginUser(String email, String password){
+    public Object loginUser(UserLoginDto userLoginDto){
+
+        // extract user details from dto
+        String email = userLoginDto.getEmail();
+        String password = userLoginDto.getPassword();
 
         //check if user exists
         Optional<UserEntity> user = userRepository.findByEmail(email);

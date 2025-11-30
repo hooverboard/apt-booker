@@ -1,4 +1,4 @@
-package com.aptBooker.backend.user.dto;
+package com.aptBooker.backend.user.dto.response;
 
 import lombok.Data;
 
