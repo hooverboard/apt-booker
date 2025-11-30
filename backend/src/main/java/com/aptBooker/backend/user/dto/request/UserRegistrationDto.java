@@ -8,15 +8,21 @@ import lombok.Data;
 @Data
 public class UserRegistrationDto {
 
-    @NotBlank
+    @NotBlank(message = "Name is required")
     @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "Email is required")
     @Email
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
+
+    @NotBlank(message = "Confirm password is required")
+    private String confirmPassword;
+
+    @NotBlank(message = "Role is required")
+    private String role;
 }

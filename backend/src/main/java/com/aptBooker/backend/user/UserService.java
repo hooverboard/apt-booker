@@ -4,6 +4,7 @@ import com.aptBooker.backend.user.dto.response.UserDto;
 import com.aptBooker.backend.user.dto.response.UserErrorDto;
 import com.aptBooker.backend.user.dto.request.UserLoginDto;
 import com.aptBooker.backend.user.dto.request.UserRegistrationDto;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,17 @@ public class UserService {
         String name = userRegistrationDto.getName();
         String email = userRegistrationDto.getEmail();
         String password = userRegistrationDto.getPassword();
+        String confirmPassword = userRegistrationDto.getConfirmPassword();
+        String role = userRegistrationDto.getRole();
+
+        //check if pw match
+        if (!password.equals(confirmPassword)){
+            //return error dto
+            UserErrorDto errorDto = new UserErrorDto();
+            errorDto.setErrorMessage("Passwords do not match");
+            errorDto.setErrorCode("PASSWORD_MISMATCH");
+            return errorDto;
+        }
 
         //check if user already exists, if not create new user
         if (!userRepository.existsByEmail(email)) {
@@ -33,6 +45,7 @@ public class UserService {
             newUser.setName(name);
             newUser.setEmail(email);
             newUser.setPassword(password);
+            newUser.setRole(role);
             userRepository.save(newUser);
 
             //return user dto success message
