@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -27,10 +28,12 @@ export default function Register() {
         form
       );
       console.log(res);
+      toast.success("Registration successful");
     } catch (error) {
       console.error("Registration error:", error);
       if (error.response) {
         console.error("Response data:", error.response.data);
+        toast.error(error.response.data.errorMessage);
       }
     }
   }
