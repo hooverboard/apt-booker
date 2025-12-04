@@ -10,20 +10,42 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import com.aptBooker.backend.security.JwtUtil;
+
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("api/shop")
+@RequestMapping("api/shops")
 public class ShopController {
 
+    @Autowired
     private ShopService shopService;
 
-    public ResponseEntity<?> createShop(@Valid @RequestBody CreateShopRequestDto createShopRequestDto){
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @PostMapping
+    public ResponseEntity<?> createShop(@Valid @RequestBody CreateShopRequestDto createShopRequestDto,
+                                        @RequestHeader("Authorization") String authHeader){
+
+        //extract hostId from jwt in header
+        String token = authHeader.replace("Bearer ", "");
+        String userRole = jwtUtil.extractRole(token);
+        Long hostId = jwtUtil.extractUserid(token);
+
+        if(!"host".equals(userRole)){
+            ShopErrorResponse shopErrorResponse = new ShopErrorResponse();
+            shopErrorResponse.setErrorCode("FORBIDDEN");
+            shopErrorResponse.setErrorMessage("Only hosts can create shops");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(shopErrorResponse);
+        }
+
         try {
 
-            // extract host id from jwt and pass as second argument
 
-            ShopEntity shop = shopService.createShop(createShopRequestDto);
+            ShopEntity shop = shopService.createShop(createShopRequestDto, hostId);
 
             ShopResponse shopResponse = new ShopResponse();
             shopResponse.setId(shop.getId());
@@ -33,8 +55,9 @@ public class ShopController {
             shopResponse.setPhoneNumber(shop.getPhoneNumber());
             shopResponse.setOpeningTime(shop.getOpeningTime());
             shopResponse.setClosingTime(shop.getClosingTime());
+            shopResponse.setHostId(hostId);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(shop);
+            return ResponseEntity.status(HttpStatus.CREATED).body(shopResponse);
         } catch (Exception e) {
             ShopErrorResponse shopErrorResponse = new ShopErrorResponse();
             shopErrorResponse.setErrorMessage(e.getMessage());

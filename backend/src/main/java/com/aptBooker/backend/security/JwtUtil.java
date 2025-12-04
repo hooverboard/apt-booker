@@ -16,11 +16,12 @@ public class JwtUtil {
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private static final long EXPIRATION_TIME = 86400000;
 
-    public String generateToken(Long userId, String name, String email) {
+    public String generateToken(Long userId, String name, String email, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userId);
         claims.put("name", name);
         claims.put("email", email);
+        claims.put("role", role);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -41,6 +42,10 @@ public class JwtUtil {
 
     public String extractEmail(String token) {
         return extractClaims(token).get("email", String.class);
+    }
+
+    public String extractRole(String token) {
+        return extractClaims(token).get("role", String.class);
     }
 
     public Boolean isTokenValid(String token) {
