@@ -1,11 +1,12 @@
 package com.aptBooker.backend.shop;
 
+import com.aptBooker.backend.services.ServiceEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalTime;
-//import java.util.ArrayList;
-//import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -37,8 +38,8 @@ public class ShopEntity {
     @Column(nullable = false)
     private LocalTime closingTime;
 
-//    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<ServiceEntity> services = new ArrayList<>();
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ServiceEntity> services = new ArrayList<>();
 
 
 }

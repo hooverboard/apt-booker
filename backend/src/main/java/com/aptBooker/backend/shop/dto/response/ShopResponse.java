@@ -3,6 +3,7 @@ package com.aptBooker.backend.shop.dto.response;
 import lombok.Data;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 public class ShopResponse {
@@ -15,5 +16,6 @@ public class ShopResponse {
     private Long hostId;
     private LocalTime openingTime;
     private LocalTime closingTime;
+    private List<Long> serviceIds;
 }
 

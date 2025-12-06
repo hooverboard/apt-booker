@@ -13,7 +13,7 @@ public interface ShopRepository extends JpaRepository<ShopEntity, Long> {
     // encontrar todos os shops por id do host
     List<ShopEntity> findByHostId(Long hostId);
 
-    //find ship by name
+    //find shop by name
     //encontrar shop por nome
     Optional<ShopEntity> findByNameIgnoreCase(String name);
 

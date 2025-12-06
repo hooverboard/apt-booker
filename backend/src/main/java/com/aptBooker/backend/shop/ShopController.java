@@ -1,5 +1,6 @@
 package com.aptBooker.backend.shop;
 
+import com.aptBooker.backend.services.ServiceEntity;
 import com.aptBooker.backend.shop.dto.request.CreateShopRequestDto;
 import com.aptBooker.backend.shop.dto.response.ShopErrorResponse;
 import com.aptBooker.backend.shop.dto.response.ShopResponse;
@@ -56,6 +57,9 @@ public class ShopController {
             shopResponse.setOpeningTime(shop.getOpeningTime());
             shopResponse.setClosingTime(shop.getClosingTime());
             shopResponse.setHostId(hostId);
+            shopResponse.setServiceIds(shop.getServices().stream()
+                    .map(ServiceEntity::getId)
+                    .toList());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(shopResponse);
         } catch (Exception e) {
