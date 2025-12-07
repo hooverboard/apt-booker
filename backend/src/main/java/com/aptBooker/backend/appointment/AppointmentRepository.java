@@ -17,5 +17,12 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
     //encontrar agedamentos por data
     List<AppointmentEntity> findByAppointmentDate(LocalDate date);
 
+    //find appointments by shopId, Date and status
+    //econtrar com shopId, data e status
+    List<AppointmentEntity> findByShopIdAndAppointmentDateAndStatus(
+            Long shopId,
+            LocalDate appointmentDate,
+            String status
+    );
 
 }

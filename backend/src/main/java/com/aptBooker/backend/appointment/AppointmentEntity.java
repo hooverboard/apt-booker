@@ -11,6 +11,7 @@ import java.time.LocalTime;
 
 @Entity
 @Data
+@Table(name = "appointments")
 public class AppointmentEntity {
 
     @Id
@@ -33,7 +34,7 @@ public class AppointmentEntity {
     private LocalTime appointmentTime;
 
     @Column(nullable = false)
-    private String status; // confirmed or cancelled
+    private String status = "confirmed"; // confirmed or cancelled
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

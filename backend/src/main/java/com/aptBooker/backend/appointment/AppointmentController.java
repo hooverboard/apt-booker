@@ -1,0 +1,55 @@
+package com.aptBooker.backend.appointment;
+
+import com.aptBooker.backend.appointment.dto.request.CreateAppointmentRequestDto;
+import com.aptBooker.backend.appointment.dto.response.AppointmentErrorResponse;
+import com.aptBooker.backend.appointment.dto.response.AppointmentResponse;
+import com.aptBooker.backend.security.JwtUtil;
+import com.aptBooker.backend.services.dto.response.ServiceResponse;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@CrossOrigin(origins = "http://localhost:5173")
+@RestController
+@RequestMapping("api/appointments")
+public class AppointmentController {
+
+    @Autowired
+    private AppointmentService appointmentService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @PostMapping
+    public ResponseEntity<?> createAppointment(@Valid @RequestBody CreateAppointmentRequestDto createAppointmentRequestDto,
+                                               @RequestHeader("Authorization") String authHeader){
+        //extract userId from jwt in header
+        //extrair userID do jwt token
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserid(token);
+
+        try {
+            AppointmentEntity appointment = appointmentService.createAppointment(createAppointmentRequestDto, userId);
+
+            AppointmentResponse response = new AppointmentResponse();
+            response.setId(appointment.getId());
+            response.setUserId(appointment.getUserId());
+            response.setServiceId(appointment.getServiceId());
+            response.setShopId(appointment.getShopId());
+            response.setAppointmentDate(appointment.getAppointmentDate());
+            response.setAppointmentTime(appointment.getAppointmentTime());
+            response.setStatus(appointment.getStatus());
+            response.setCreatedAt(appointment.getCreatedAt());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            AppointmentErrorResponse appointmentErrorResponse = new AppointmentErrorResponse();
+            appointmentErrorResponse.setErrorCode("CREATING APPOINTMENT FAILED");
+            appointmentErrorResponse.setErrorMessage(e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(appointmentErrorResponse);
+        }
+    }
+}
