@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.aptBooker.backend.security.JwtUtil;
 
+import java.util.List;
+
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -68,6 +70,40 @@ public class ShopController {
             shopErrorResponse.setErrorCode("CREATING SHOP FAILED");
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(shopErrorResponse);
+        }
+    }
+
+    //GET all shops
+    //get todos os shops
+    @GetMapping
+    public ResponseEntity<?> getAllShops() {
+        try {
+            List<ShopEntity> shops = shopService.getAllShops();
+
+            List<ShopResponse> shopResponses = shops.stream()
+                    .map(shop -> {
+                        ShopResponse response = new ShopResponse();
+                        response.setId(shop.getId());
+                        response.setName(shop.getName());
+                        response.setAddress(shop.getAddress());
+                        response.setDescription(shop.getDescription());
+                        response.setPhoneNumber(shop.getPhoneNumber());
+                        response.setOpeningTime(shop.getOpeningTime());
+                        response.setClosingTime(shop.getClosingTime());
+                        response.setHostId(shop.getHostId());
+                        response.setServiceIds(shop.getServices().stream()
+                                .map(ServiceEntity::getId)
+                                .toList());
+                        return response;
+                    })
+                    .toList();
+
+            return ResponseEntity.ok(shopResponses);
+        } catch (Exception e) {
+            ShopErrorResponse error = new ShopErrorResponse();
+            error.setErrorMessage(e.getMessage());
+            error.setErrorCode("GET SHOPS REQUEST FAILED");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 public class ShopService {
@@ -52,5 +53,12 @@ public class ShopService {
         shopRepository.save(newShop);
 
         return newShop;
+    }
+
+    // get all shops
+    // get request para todos os shops
+
+    public List<ShopEntity> getAllShops(){
+        return shopRepository.findAll();
     }
 }
