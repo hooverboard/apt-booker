@@ -26,6 +26,8 @@ public class CreateShopRequestDto {
     @Size(min = 10, max = 15, message = "Phone number must be between 10 and 15 characters")
     private String phoneNumber;
 
+    private String imageUrl;
+
     @NotNull(message = "Opening time is required")
     private LocalTime openingTime;
 

@@ -33,6 +33,9 @@ public class ShopEntity {
     private Long hostId;
 
     @Column(nullable = false)
+    private String imageUrl;
+
+    @Column(nullable = false)
     private LocalTime openingTime;
 
     @Column(nullable = false)

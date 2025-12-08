@@ -1,6 +1,7 @@
 package com.aptBooker.backend.appointment;
 
 import com.aptBooker.backend.appointment.dto.request.CreateAppointmentRequestDto;
+import com.aptBooker.backend.appointment.dto.response.AvailableTimesResponse;
 import com.aptBooker.backend.services.ServiceEntity;
 import com.aptBooker.backend.services.ServiceRepository;
 import com.aptBooker.backend.shop.ShopEntity;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,7 +40,8 @@ public class AppointmentService {
                 .orElseThrow(() -> new RuntimeException("Service not found"));
 
         //grab shop entity
-        ShopEntity shop = shopRepository.getById(shopId);
+        ShopEntity shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new RuntimeException("Shop not found"));
 
         if (!service.getShop().getId().equals(shopId)){
             throw new RuntimeException("Service does not belong to this ship");
@@ -113,5 +116,68 @@ public class AppointmentService {
         appointmentEntity.setAppointmentDate(appointmentDate);
         appointmentEntity.setAppointmentTime(appointmentTime);
         return appointmentRepository.save(appointmentEntity);
+    }
+
+    public AvailableTimesResponse getAvailableTimes(Long shopId, Long serviceId, LocalDate date) {
+        // Fetch the shop and service
+        ShopEntity shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new RuntimeException("Shop not found"));
+        ServiceEntity service = serviceRepository.findById(serviceId)
+                .orElseThrow(() -> new RuntimeException("Service not found"));
+
+        // Verify service belongs to shop
+        if (!service.getShop().getId().equals(shopId)) {
+            throw new RuntimeException("Service does not belong to this shop");
+        }
+
+        LocalTime openingTime = shop.getOpeningTime();
+        LocalTime closingTime = shop.getClosingTime();
+        Integer serviceDuration = service.getDuration();
+
+        // Generate all possible time slots (every 30 minutes)
+        List<LocalTime> allSlots = new ArrayList<>();
+        LocalTime currentSlot = openingTime;
+        
+        while (currentSlot.plusMinutes(serviceDuration).isBefore(closingTime) || 
+               currentSlot.plusMinutes(serviceDuration).equals(closingTime)) {
+            allSlots.add(currentSlot);
+            currentSlot = currentSlot.plusMinutes(30); // 30-minute intervals
+        }
+
+        // Filter out past times if the date is today
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+        if (date.equals(today)) {
+            allSlots.removeIf(slot -> slot.isBefore(now));
+        }
+
+        // Get existing appointments for this shop and date
+        List<AppointmentEntity> existingAppointments = appointmentRepository
+                .findByShopIdAndAppointmentDateAndStatus(shopId, date, "confirmed");
+
+        // Remove slots that overlap with existing appointments
+        allSlots.removeIf(slot -> {
+            LocalTime slotEndTime = slot.plusMinutes(serviceDuration);
+            
+            for (AppointmentEntity existing : existingAppointments) {
+                ServiceEntity existingService = serviceRepository.findById(existing.getServiceId())
+                        .orElse(null);
+                if (existingService == null) continue;
+
+                LocalTime existingStart = existing.getAppointmentTime();
+                LocalTime existingEnd = existingStart.plusMinutes(existingService.getDuration());
+
+                // Check for any overlap
+                if ((slot.isBefore(existingEnd) && slotEndTime.isAfter(existingStart)) ||
+                    slot.equals(existingStart)) {
+                    return true; // Remove this slot
+                }
+            }
+            return false;
+        });
+
+        AvailableTimesResponse response = new AvailableTimesResponse();
+        response.setAvailableTimes(allSlots);
+        return response;
     }
 }

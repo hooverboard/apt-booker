@@ -50,6 +50,8 @@
   line-height: 1.5;
 }
 
+/* after header */
+
 .shop-page-selection-section {
   margin-top: 30px;
   border-top: 1px solid #eee;
@@ -89,9 +91,9 @@
 
 .service-button.selected,
 .time-button.selected {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
-  border-color: #4CAF50;
+  border-color: #4caf50;
 }
 
 .booking-summary {
@@ -130,4 +132,38 @@
 
 .confirm-booking-btn:hover {
   background-color: #0056b3;
+}
+
+.service-options {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+  padding-bottom: 10px;
+}
+
+.service-button {
+  flex-shrink: 0;
+  width: 25vw; /* Set a fixed minimum width */
+}
+
+.date-picker-container {
+  margin-bottom: 30px;
+}
+
+.date-picker {
+  padding: 12px 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.date-picker:focus {
+  outline: none;
+  border-color: #4caf50;
+  background-color: white;
 }

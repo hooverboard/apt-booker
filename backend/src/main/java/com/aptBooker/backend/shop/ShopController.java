@@ -1,6 +1,6 @@
 package com.aptBooker.backend.shop;
 
-import com.aptBooker.backend.services.ServiceEntity;
+import com.aptBooker.backend.services.dto.response.ServiceResponse;
 import com.aptBooker.backend.shop.dto.request.CreateShopRequestDto;
 import com.aptBooker.backend.shop.dto.response.ShopErrorResponse;
 import com.aptBooker.backend.shop.dto.response.ShopResponse;
@@ -59,8 +59,17 @@ public class ShopController {
             shopResponse.setOpeningTime(shop.getOpeningTime());
             shopResponse.setClosingTime(shop.getClosingTime());
             shopResponse.setHostId(hostId);
-            shopResponse.setServiceIds(shop.getServices().stream()
-                    .map(ServiceEntity::getId)
+            shopResponse.setImageUrl(shop.getImageUrl());
+            shopResponse.setServices(shop.getServices().stream()
+                    .map(service -> {
+                        ServiceResponse serviceResponse = new ServiceResponse();
+                        serviceResponse.setId(service.getId());
+                        serviceResponse.setName(service.getName());
+                        serviceResponse.setPrice(service.getPrice());
+                        serviceResponse.setDuration(service.getDuration());
+                        serviceResponse.setDescription(service.getDescription());
+                        return serviceResponse;
+                    })
                     .toList());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(shopResponse);
@@ -91,8 +100,18 @@ public class ShopController {
                         response.setOpeningTime(shop.getOpeningTime());
                         response.setClosingTime(shop.getClosingTime());
                         response.setHostId(shop.getHostId());
-                        response.setServiceIds(shop.getServices().stream()
-                                .map(ServiceEntity::getId)
+                        response.setImageUrl(shop.getImageUrl());
+                        response.setServices(shop.getServices().stream()
+                                .map(service -> {
+                                    ServiceResponse serviceResponse = new ServiceResponse();
+                                    serviceResponse.setId(service.getId());
+                                    serviceResponse.setName(service.getName());
+                                    serviceResponse.setPrice(service.getPrice());
+                                    serviceResponse.setDuration(service.getDuration());
+                                    serviceResponse.setDescription(service.getDescription());
+
+                                    return serviceResponse;
+                                })
                                 .toList());
                         return response;
                     })

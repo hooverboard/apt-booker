@@ -3,13 +3,17 @@ package com.aptBooker.backend.appointment;
 import com.aptBooker.backend.appointment.dto.request.CreateAppointmentRequestDto;
 import com.aptBooker.backend.appointment.dto.response.AppointmentErrorResponse;
 import com.aptBooker.backend.appointment.dto.response.AppointmentResponse;
+import com.aptBooker.backend.appointment.dto.response.AvailableTimesResponse;
 import com.aptBooker.backend.security.JwtUtil;
 import com.aptBooker.backend.services.dto.response.ServiceResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -49,6 +53,22 @@ public class AppointmentController {
             appointmentErrorResponse.setErrorCode("CREATING APPOINTMENT FAILED");
             appointmentErrorResponse.setErrorMessage(e.getMessage());
 
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(appointmentErrorResponse);
+        }
+    }
+
+    @GetMapping("/available-times")
+    public ResponseEntity<?> getAvailableTimes(
+            @RequestParam Long shopId,
+            @RequestParam Long serviceId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        try {
+            AvailableTimesResponse response = appointmentService.getAvailableTimes(shopId, serviceId, date);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            AppointmentErrorResponse appointmentErrorResponse = new AppointmentErrorResponse();
+            appointmentErrorResponse.setErrorCode("FETCH_AVAILABLE_TIMES_FAILED");
+            appointmentErrorResponse.setErrorMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(appointmentErrorResponse);
         }
     }

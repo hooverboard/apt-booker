@@ -6,7 +6,7 @@ export default function ShopCard({ shop }) {
   return (
     <div className="shop-card">
       <div className="shop-image">
-        <img src={shop.image} alt={shop.name} />
+        <img src={shop.imageUrl} alt={shop.name} />
       </div>
       <div className="shop-info">
         <h3>{shop.name}</h3>
@@ -16,7 +16,7 @@ export default function ShopCard({ shop }) {
         <p className="shop-hours">
           ⏰ {shop.openingTime.slice(0, 5)} - {shop.closingTime.slice(0, 5)}
         </p>
-        <Link to={`/shop/${shop.id}`} state={{ shop }}>
+        <Link to={`/shops/${shop.id}`} state={{ shop }}>
           <button className="book-now-btn">Book Now</button>
         </Link>
       </div>

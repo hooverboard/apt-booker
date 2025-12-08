@@ -1,0 +1,33 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form input {
+  margin: 3px 3px;
+  padding: 0px 5px;
+  height: 5vh;
+  min-height: 30px;
+  width: 30vw;
+  min-width: 200px;
+  outline: 0.5px solid black;
+  border: 0px;
+  border-radius: 10px;
+  background-color: rgb(255, 255, 255);
+  text-align: center;
+  font-size: 17px;
+}
+
+.form input.storeHours {
+  width: 12vw;
+  min-width: 90px;
+}
+
+.form button {
+  width: 15vw;
+  margin-top: 20px;
+  align-self: center;
+  background-color: rgb(33, 218, 46);
+}

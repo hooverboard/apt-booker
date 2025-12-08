@@ -27,8 +27,12 @@ public class ShopService {
         String address = createShopRequestDto.getAddress();
         String phoneNumber = createShopRequestDto.getPhoneNumber();
         String description = createShopRequestDto.getDescription();
+        String imageUrl = createShopRequestDto.getImageUrl();
         LocalTime openingTime = createShopRequestDto.getOpeningTime();
         LocalTime closingTime = createShopRequestDto.getClosingTime();
+
+        // Debug log to check what imageUrl value is being received
+        System.out.println("DEBUG - Received imageUrl: '" + imageUrl + "' (is null: " + (imageUrl == null) + ", is empty: " + (imageUrl != null && imageUrl.isEmpty()) + ")");
 
         //validation
         //validacao
@@ -47,6 +51,7 @@ public class ShopService {
         newShop.setAddress(address);
         newShop.setPhoneNumber(phoneNumber);
         newShop.setDescription(description);
+        newShop.setImageUrl(imageUrl);
         newShop.setOpeningTime(openingTime);
         newShop.setClosingTime(closingTime);
         newShop.setHostId(hostId);
