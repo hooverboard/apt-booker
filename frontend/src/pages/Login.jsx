@@ -3,7 +3,8 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../context/Context";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import "../css/Login.css";
 
 export default function Login() {
   const { login } = useAuth();
@@ -44,21 +45,26 @@ export default function Login() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h1>Login</h1>
-      <input
-        type="email"
-        placeholder="Email"
-        name="email"
-        onChange={handleChange}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        name="password"
-        onChange={handleChange}
-      />
-      <button type="submit">Login</button>
-    </form>
+    <div className="container">
+      <form onSubmit={handleSubmit}>
+        <h1>Login</h1>
+        <input
+          type="email"
+          placeholder="Email"
+          name="email"
+          onChange={handleChange}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          name="password"
+          onChange={handleChange}
+        />
+        <button type="submit">Submit</button>
+        <p className="auth-link">
+          Not registered? <Link to="/register">Sign up</Link>
+        </p>
+      </form>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 package com.aptBooker.backend.shop;
 
 import com.aptBooker.backend.shop.dto.request.CreateShopRequestDto;
+import com.aptBooker.backend.shop.dto.request.UpdateShopRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,5 +66,43 @@ public class ShopService {
 
     public List<ShopEntity> getAllShops(){
         return shopRepository.findAll();
+    }
+
+    // get shops by host id
+    // buscar shops do host por id
+    public List<ShopEntity> getShopsByHostId(Long hostId) {
+        return shopRepository.findByHostId(hostId);
+    }
+
+    // update shop
+    // atualizar shop
+    public ShopEntity updateShop(Long shopId, UpdateShopRequestDto updateShopRequestDto, Long hostId) {
+        // Find the shop
+        ShopEntity shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new RuntimeException("Shop not found"));
+
+        // Verify that the shop belongs to the host
+        if (!shop.getHostId().equals(hostId)) {
+            throw new RuntimeException("You are not authorized to update this shop");
+        }
+
+        // Validate times
+        LocalTime openingTime = updateShopRequestDto.getOpeningTime();
+        LocalTime closingTime = updateShopRequestDto.getClosingTime();
+
+        if (closingTime.isBefore(openingTime)) {
+            throw new RuntimeException("Closing time must be after opening time");
+        }
+
+        // Update shop fields
+        shop.setName(updateShopRequestDto.getName());
+        shop.setAddress(updateShopRequestDto.getAddress());
+        shop.setDescription(updateShopRequestDto.getDescription());
+        shop.setPhoneNumber(updateShopRequestDto.getPhoneNumber());
+        shop.setImageUrl(updateShopRequestDto.getImageUrl());
+        shop.setOpeningTime(openingTime);
+        shop.setClosingTime(closingTime);
+
+        return shopRepository.save(shop);
     }
 }

@@ -2,6 +2,7 @@ package com.aptBooker.backend.shop;
 
 import com.aptBooker.backend.services.dto.response.ServiceResponse;
 import com.aptBooker.backend.shop.dto.request.CreateShopRequestDto;
+import com.aptBooker.backend.shop.dto.request.UpdateShopRequestDto;
 import com.aptBooker.backend.shop.dto.response.ShopErrorResponse;
 import com.aptBooker.backend.shop.dto.response.ShopResponse;
 import jakarta.validation.Valid;
@@ -122,6 +123,97 @@ public class ShopController {
             ShopErrorResponse error = new ShopErrorResponse();
             error.setErrorMessage(e.getMessage());
             error.setErrorCode("GET SHOPS REQUEST FAILED");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+    }
+
+    //get shops by host
+    //buscar shops do host
+    @GetMapping("/my-shops")
+    public ResponseEntity<?> getMyShops(@RequestHeader("Authorization") String authHeader) {
+        try {
+            // Extract hostId from JWT
+            String token = authHeader.replace("Bearer ", "");
+            Long hostId = jwtUtil.extractUserid(token);
+
+            List<ShopEntity> shops = shopService.getShopsByHostId(hostId);
+
+            List<ShopResponse> shopResponses = shops.stream()
+                    .map(shop -> {
+                        ShopResponse response = new ShopResponse();
+                        response.setId(shop.getId());
+                        response.setName(shop.getName());
+                        response.setAddress(shop.getAddress());
+                        response.setDescription(shop.getDescription());
+                        response.setPhoneNumber(shop.getPhoneNumber());
+                        response.setOpeningTime(shop.getOpeningTime());
+                        response.setClosingTime(shop.getClosingTime());
+                        response.setHostId(shop.getHostId());
+                        response.setImageUrl(shop.getImageUrl());
+                        response.setServices(shop.getServices().stream()
+                                .map(service -> {
+                                    ServiceResponse serviceResponse = new ServiceResponse();
+                                    serviceResponse.setId(service.getId());
+                                    serviceResponse.setName(service.getName());
+                                    serviceResponse.setPrice(service.getPrice());
+                                    serviceResponse.setDuration(service.getDuration());
+                                    serviceResponse.setDescription(service.getDescription());
+                                    return serviceResponse;
+                                })
+                                .toList());
+                        return response;
+                    })
+                    .toList();
+
+            return ResponseEntity.ok(shopResponses);
+        } catch (Exception e) {
+            ShopErrorResponse error = new ShopErrorResponse();
+            error.setErrorMessage(e.getMessage());
+            error.setErrorCode("GET MY SHOPS REQUEST FAILED");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+    }
+
+    //UPDATE shop
+    //atualizar shop
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateShop(@PathVariable Long id,
+                                        @Valid @RequestBody UpdateShopRequestDto updateShopRequestDto,
+                                        @RequestHeader("Authorization") String authHeader) {
+        try {
+            // Extract hostId from JWT
+            String token = authHeader.replace("Bearer ", "");
+            Long hostId = jwtUtil.extractUserid(token);
+
+            ShopEntity updatedShop = shopService.updateShop(id, updateShopRequestDto, hostId);
+
+            ShopResponse response = new ShopResponse();
+            response.setId(updatedShop.getId());
+            response.setName(updatedShop.getName());
+            response.setAddress(updatedShop.getAddress());
+            response.setDescription(updatedShop.getDescription());
+            response.setPhoneNumber(updatedShop.getPhoneNumber());
+            response.setOpeningTime(updatedShop.getOpeningTime());
+            response.setClosingTime(updatedShop.getClosingTime());
+            response.setHostId(updatedShop.getHostId());
+            response.setImageUrl(updatedShop.getImageUrl());
+            response.setServices(updatedShop.getServices().stream()
+                    .map(service -> {
+                        ServiceResponse serviceResponse = new ServiceResponse();
+                        serviceResponse.setId(service.getId());
+                        serviceResponse.setName(service.getName());
+                        serviceResponse.setPrice(service.getPrice());
+                        serviceResponse.setDuration(service.getDuration());
+                        serviceResponse.setDescription(service.getDescription());
+                        return serviceResponse;
+                    })
+                    .toList());
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ShopErrorResponse error = new ShopErrorResponse();
+            error.setErrorMessage(e.getMessage());
+            error.setErrorCode("UPDATE REQUEST FAILED");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }

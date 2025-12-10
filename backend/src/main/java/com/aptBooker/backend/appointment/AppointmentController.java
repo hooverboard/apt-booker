@@ -61,7 +61,7 @@ public class AppointmentController {
     public ResponseEntity<?> getAvailableTimes(
             @RequestParam Long shopId,
             @RequestParam Long serviceId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+            @RequestParam @DateTimeFormat LocalDate date) {
         try {
             AvailableTimesResponse response = appointmentService.getAvailableTimes(shopId, serviceId, date);
             return ResponseEntity.ok(response);

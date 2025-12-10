@@ -8,9 +8,13 @@
   transition: box-shadow 0.3s ease;
   margin-bottom: 20px;
   max-width: 800px;
-  width: 45vw;
+  width: 55vw;
+  min-width: 750px;
   min-height: 80px;
   max-height: 250px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
 .shop-card:hover {
@@ -32,7 +36,7 @@
 }
 
 .shop-info {
-  padding: 20px;
+  padding: 5px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -75,7 +79,7 @@
 
 .book-now-btn {
   padding: 10px 24px;
-  background-color: #4caf50;
+  background-color: #018790;
   color: white;
   border: none;
   border-radius: 5px;
@@ -87,5 +91,39 @@
 }
 
 .book-now-btn:hover {
-  background-color: #45a049;
+  background-color: #00b7b5;
+}
+
+/* //responsive */
+
+@media (max-width: 768px) {
+  .shop-card {
+    max-width: 100%;
+    min-width: 300px;
+    width: 90vw;
+  }
+
+  .shop-image {
+    max-height: 170px;
+  }
+}
+
+@media (max-width: 479px) {
+  .shop-card {
+    max-height: 35vh;
+    display: flex;
+    flex-direction: column;
+    height: 50vh;
+    max-height: 50vh;
+  }
+
+  .shop-image {
+    padding-top: 20px;
+  }
+
+  .shop-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }

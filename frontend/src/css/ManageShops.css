@@ -1,0 +1,158 @@
+.manage-shops-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.manage-shops-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.manage-shops-header h1 {
+  font-size: 36px;
+  color: #333;
+  margin: 0;
+}
+
+.create-shop-btn {
+  padding: 12px 24px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-shop-btn:hover {
+  background-color: #45a049;
+}
+
+.no-shops {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.no-shops p {
+  font-size: 20px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.create-first-shop-btn {
+  padding: 14px 28px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-first-shop-btn:hover {
+  background-color: #45a049;
+}
+
+.shops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 30px;
+}
+
+.manage-shop-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.manage-shop-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.manage-shop-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.manage-shop-details {
+  padding: 20px;
+}
+
+.manage-shop-details h2 {
+  font-size: 24px;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+.shop-address,
+.shop-description,
+.shop-phone,
+.shop-hours {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.shop-description {
+  color: #666;
+}
+
+.shop-services {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.shop-services strong {
+  font-size: 16px;
+  color: #333;
+}
+
+.shop-services ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+
+.shop-services li {
+  font-size: 14px;
+  color: #555;
+  padding: 5px 0;
+}
+
+.manage-shop-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.edit-shop-btn {
+  flex: 1;
+  padding: 10px 20px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-shop-btn:hover {
+  background-color: #e68900;
+}

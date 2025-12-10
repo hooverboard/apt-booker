@@ -119,13 +119,15 @@ public class AppointmentService {
     }
 
     public AvailableTimesResponse getAvailableTimes(Long shopId, Long serviceId, LocalDate date) {
-        // Fetch the shop and service
+        // get the shop and service
+        //buscar o shop e servico
         ShopEntity shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new RuntimeException("Shop not found"));
         ServiceEntity service = serviceRepository.findById(serviceId)
                 .orElseThrow(() -> new RuntimeException("Service not found"));
 
-        // Verify service belongs to shop
+        // verify service belongs to shop
+        //verificar que o servico pertence ao shop
         if (!service.getShop().getId().equals(shopId)) {
             throw new RuntimeException("Service does not belong to this shop");
         }
@@ -134,28 +136,32 @@ public class AppointmentService {
         LocalTime closingTime = shop.getClosingTime();
         Integer serviceDuration = service.getDuration();
 
-        // Generate all possible time slots (every 30 minutes)
+        // generate all  time slots for every 30 minutes
+        //gerar horarios disponiveis para cada 30 minutos
         List<LocalTime> allSlots = new ArrayList<>();
         LocalTime currentSlot = openingTime;
         
         while (currentSlot.plusMinutes(serviceDuration).isBefore(closingTime) || 
                currentSlot.plusMinutes(serviceDuration).equals(closingTime)) {
             allSlots.add(currentSlot);
-            currentSlot = currentSlot.plusMinutes(30); // 30-minute intervals
+            currentSlot = currentSlot.plusMinutes(30);
         }
 
-        // Filter out past times if the date is today
+        // filter out past times if the date is today
+        // remover horarios no pasado
         LocalDate today = LocalDate.now();
         LocalTime now = LocalTime.now();
         if (date.equals(today)) {
             allSlots.removeIf(slot -> slot.isBefore(now));
         }
 
-        // Get existing appointments for this shop and date
+        // get existing appointments for this shop and date
+        // buscar agendamentos que ja existem desta data para o shop
         List<AppointmentEntity> existingAppointments = appointmentRepository
                 .findByShopIdAndAppointmentDateAndStatus(shopId, date, "confirmed");
 
-        // Remove slots that overlap with existing appointments
+        // remove slots that overlap with existing appointments
+        // remover horarios que ja estao agendados
         allSlots.removeIf(slot -> {
             LocalTime slotEndTime = slot.plusMinutes(serviceDuration);
             
@@ -170,7 +176,7 @@ public class AppointmentService {
                 // Check for any overlap
                 if ((slot.isBefore(existingEnd) && slotEndTime.isAfter(existingStart)) ||
                     slot.equals(existingStart)) {
-                    return true; // Remove this slot
+                    return true; // remover se este horario ja for agendado
                 }
             }
             return false;

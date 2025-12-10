@@ -23,30 +23,37 @@ export default function Home() {
 
   return (
     <div className="home-container">
-      <h1>Appointment Booker</h1>
-      <div>
-        <div className="user-info">
-          {user ? (
-            <>
-              <h2>Welcome, {user.name}!</h2>
-              {user.role === "host" && (
+      <div className="user-info">
+        {user ? (
+          <>
+            <h2>Welcome, {user.name}!</h2>
+            {user.role === "host" && (
+              <div>
                 <button onClick={() => navigate("/shops/create")}>
                   Create shop
                 </button>
-              )}
-              <button onClick={logout}>Logout</button>
-            </>
-          ) : (
-            <>
-              <h2>Browse Available Services</h2>
-            </>
-          )}
-        </div>
-        <div className="shops-list">
-          {shopList.map((shop) => (
-            <ShopCard key={shop.id} shop={shop} />
-          ))}
-        </div>
+                <button onClick={() => navigate("/shops/manage")}>
+                  Manage
+                </button>
+              </div>
+            )}
+            <button onClick={logout}>Logout</button>
+          </>
+        ) : (
+          <>
+            <h2>Apt Booker</h2>
+            <div>
+              <button onClick={() => navigate("/register")}>Register</button>
+              <button onClick={() => navigate("/login")}>Login</button>
+            </div>
+          </>
+        )}
+      </div>
+      <div className="shops-list">
+        <h1>Shops</h1>
+        {shopList.map((shop) => (
+          <ShopCard key={shop.id} shop={shop} />
+        ))}
       </div>
     </div>
   );

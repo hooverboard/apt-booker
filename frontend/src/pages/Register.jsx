@@ -2,6 +2,8 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { Link } from "react-router-dom";
+import "../css/Register.css";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -39,37 +41,42 @@ export default function Register() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h1>Register</h1>
-      <input
-        type="text"
-        placeholder="Name"
-        name="name"
-        onChange={handleChange}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        name="email"
-        onChange={handleChange}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        name="password"
-        onChange={handleChange}
-      />
-      <input
-        type="password"
-        placeholder="Confirm Password"
-        name="confirmPassword"
-        onChange={handleChange}
-      />
-      <select name="role" value={form.role} onChange={handleChange}>
-        <option value="user">User</option>
-        <option value="host">Host</option>
-      </select>
-      <button type="submit">Register</button>
-    </form>
+    <div className="container">
+      <form onSubmit={handleSubmit}>
+        <h1>Register</h1>
+        <input
+          type="text"
+          placeholder="Name"
+          name="name"
+          onChange={handleChange}
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          name="email"
+          onChange={handleChange}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          name="password"
+          onChange={handleChange}
+        />
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          name="confirmPassword"
+          onChange={handleChange}
+        />
+        <select name="role" value={form.role} onChange={handleChange}>
+          <option value="user">User</option>
+          <option value="host">Host</option>
+        </select>
+        <button type="submit">Register</button>
+        <p className="auth-link">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
+      </form>
+    </div>
   );
 }

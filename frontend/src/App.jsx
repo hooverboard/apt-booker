@@ -7,6 +7,8 @@ import ShopPage from "./pages/ShopPage"; // Import ShopPage
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./context/Context";
 import CreateShop from "./pages/CreateShop";
+import ManageShops from "./pages/ManageShops";
+import EditShop from "./pages/EditShop";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/shops/create" element={<CreateShop />} />
+          <Route path="/shops/manage" element={<ManageShops />} />
+          <Route path="/shops/:id/edit" element={<EditShop />} />
           <Route path="/shops/:id" element={<ShopPage />} />
         </Routes>
       </Router>
