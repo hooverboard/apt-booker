@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import EditService from "../components/EditService";
 import axios from "axios";
 import { useAuth } from "../context/Context";
@@ -11,7 +11,8 @@ export default function EditShopServices() {
   const { shop } = location.state || {};
   const [services, setServices] = useState(shop?.services || []);
   const { token } = useAuth();
-  console.log("SHOP :", shop);
+
+  const navigate = useNavigate();
 
   async function handleServiceUpdate(updatedData) {
     setServices((prevServices) =>
@@ -48,6 +49,9 @@ export default function EditShopServices() {
 
   return (
     <div>
+      <button className="back-button" onClick={() => navigate(-1)}>
+        {"<"}
+      </button>
       {services.map((service) => (
         <EditService
           id={service.id}

@@ -4,7 +4,7 @@
   padding: 20px;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.387), 0 1.5px 4px rgba(0, 0, 0, 0.1);
 }
 
 .edit-shop-container h1 {
@@ -39,12 +39,12 @@
   border-radius: 5px;
   font-size: 16px;
   transition: border-color 0.3s ease;
+  background-color: #0187909b;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #4caf50;
 }
 
 .form-group textarea {
@@ -94,12 +94,12 @@
 }
 
 .save-btn {
-  background-color: #4caf50;
+  background-color: #00b7b5;
   color: white;
 }
 
 .save-btn:hover {
-  background-color: #45a049;
+  background-color: #018790;
 }
 
 @media (max-width: 768px) {

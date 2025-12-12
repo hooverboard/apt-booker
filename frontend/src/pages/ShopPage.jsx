@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/Context";
@@ -9,6 +9,8 @@ export default function ShopPage() {
   const location = useLocation();
   const { shop } = location.state || {};
   const { token, user } = useAuth();
+
+  const navigate = useNavigate();
 
   const [selectedService, setSelectedService] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
@@ -106,6 +108,9 @@ export default function ShopPage() {
 
   return (
     <div className="shop-page-container">
+      <button className="back-button" onClick={() => navigate(-1)}>
+        {"<"}
+      </button>
       <div className="shop-page-header">
         <img src={shop.imageUrl} alt={shop.name} className="shop-page-image" />
         <div className="shop-page-details">

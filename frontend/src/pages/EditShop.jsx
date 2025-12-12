@@ -95,6 +95,9 @@ export default function EditShop() {
 
   return (
     <div className="edit-shop-container">
+      <button className="back-button" onClick={() => navigate(-1)}>
+        {"<"}
+      </button>
       <h1>Edit Shop</h1>
       <form onSubmit={handleSubmit} className="edit-shop-form">
         <div className="form-group">
@@ -192,13 +195,6 @@ export default function EditShop() {
         </div>
 
         <div className="form-actions">
-          <button
-            type="button"
-            className="cancel-btn"
-            onClick={() => navigate("/shops/manage")}
-          >
-            Cancel
-          </button>
           <button type="submit" className="save-btn">
             Save Changes
           </button>

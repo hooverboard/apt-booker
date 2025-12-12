@@ -1,3 +1,26 @@
+.back-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border-radius: 50%;
+  height: 8vh;
+  width: 8vh;
+  background-color: #00b7b5;
+  border: none;
+  outline: none;
+  transition: background-color 0.3s;
+}
+
+.back-button:hover {
+  background-color: #005461;
+  cursor: pointer;
+}
+
+.back-button:active {
+  border: none;
+  outline: none;
+}
+
 .shop-page-container {
   width: 100%;
   margin: 0;

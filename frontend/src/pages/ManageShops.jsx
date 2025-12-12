@@ -43,6 +43,9 @@ export default function ManageShops() {
 
   return (
     <div className="manage-shops-container">
+      <button className="back-button" onClick={() => navigate(-1)}>
+        {"<"}
+      </button>
       <div className="manage-shops-header">
         <h1>Manage Your Shops</h1>
         <button
