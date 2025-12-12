@@ -217,4 +217,39 @@ public class ShopController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
+
+    //GET shop by id
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getShopById(@PathVariable Long id) {
+        try {
+            ShopEntity shop = shopService.getShopById(id);
+            ShopResponse response = new ShopResponse();
+            response.setId(shop.getId());
+            response.setName(shop.getName());
+            response.setAddress(shop.getAddress());
+            response.setDescription(shop.getDescription());
+            response.setPhoneNumber(shop.getPhoneNumber());
+            response.setOpeningTime(shop.getOpeningTime());
+            response.setClosingTime(shop.getClosingTime());
+            response.setHostId(shop.getHostId());
+            response.setImageUrl(shop.getImageUrl());
+            response.setServices(shop.getServices().stream()
+                    .map(service -> {
+                        ServiceResponse serviceResponse = new ServiceResponse();
+                        serviceResponse.setId(service.getId());
+                        serviceResponse.setName(service.getName());
+                        serviceResponse.setPrice(service.getPrice());
+                        serviceResponse.setDuration(service.getDuration());
+                        serviceResponse.setDescription(service.getDescription());
+                        return serviceResponse;
+                    })
+                    .toList());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ShopErrorResponse error = new ShopErrorResponse();
+            error.setErrorMessage(e.getMessage());
+            error.setErrorCode("GET SHOP BY ID FAILED");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+    }
 }

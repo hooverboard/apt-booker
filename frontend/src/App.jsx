@@ -10,6 +10,7 @@ import CreateShop from "./pages/CreateShop";
 import ManageShops from "./pages/ManageShops";
 import EditShop from "./pages/EditShop";
 import EditShopServices from "./pages/EditShopServices";
+import ManageBookings from "./pages/ManageBookings";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             path="/shops/:id/services/edit"
             element={<EditShopServices />}
           />
+          <Route path="/bookings/manage" element={<ManageBookings />} />
         </Routes>
       </Router>
     </AuthProvider>

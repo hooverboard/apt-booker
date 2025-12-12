@@ -1,0 +1,22 @@
+.create-shop-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border-radius: 50%;
+  height: 8vh;
+  width: 8vh;
+  background-color: #00b7b5;
+  border: none;
+  outline: none;
+  transition: background-color 0.3s;
+}
+
+.create-shop-button:hover {
+  background-color: #005461;
+  cursor: pointer;
+}
+
+.create-shop-button:active {
+  border: none;
+  outline: none;
+}

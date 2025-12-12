@@ -1,3 +1,19 @@
+.service-card-button-area-delete {
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-left: 10px;
+}
+
+.service-card-button-area-delete:hover {
+  background-color: #b71c1c;
+}
 .edit-service-container {
   display: flex;
   flex-direction: column;
@@ -23,6 +39,23 @@
 .edit-service-section button {
   background-color: #00b7b5;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.718), 0 1.5px 4px rgba(0, 0, 0, 0.1);
+}
+
+.edit-service-section .service-card-button-area-delete {
+  background-color: #e53935 !important;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-left: 10px;
+}
+
+.edit-service-section .service-card-button-area-delete:hover {
+  background-color: #b71c1c !important;
 }
 
 .edit-service-container input {
@@ -70,4 +103,8 @@
 .price-duration-area input {
   margin: 0px 10px;
   margin-bottom: 18px;
+}
+
+.service-card-button-area.service-card-button-area-delete {
+  background: red;
 }

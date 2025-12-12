@@ -186,4 +186,15 @@ public class AppointmentService {
         response.setAvailableTimes(allSlots);
         return response;
     }
+
+    public List<AppointmentEntity> getConfirmedAppointmentsByShopId(Long shopId, Long userId) {
+        ShopEntity shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new RuntimeException("Shop not found"));
+        if (!shop.getHostId().equals(userId)) {
+            throw new RuntimeException("You are not authorized to view these appointments");
+        }
+        return appointmentRepository.findByShopIdAndStatus(shopId, "confirmed");
+    }
+
+
 }

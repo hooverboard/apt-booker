@@ -87,6 +87,13 @@ export default function ManageShops() {
                   ⏰ {shop.openingTime.slice(0, 5)} -{" "}
                   {shop.closingTime.slice(0, 5)}
                 </p>
+                <button
+                  onClick={() =>
+                    navigate("/bookings/manage", { state: { shop } })
+                  }
+                >
+                  Manage appointments
+                </button>
                 <div className="shop-services">
                   <div>
                     <strong>Services:</strong>

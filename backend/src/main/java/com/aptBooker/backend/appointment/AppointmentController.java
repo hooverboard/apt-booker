@@ -3,6 +3,7 @@ package com.aptBooker.backend.appointment;
 import com.aptBooker.backend.appointment.dto.request.CreateAppointmentRequestDto;
 import com.aptBooker.backend.appointment.dto.response.AppointmentErrorResponse;
 import com.aptBooker.backend.appointment.dto.response.AppointmentResponse;
+import com.aptBooker.backend.appointment.dto.response.AppointmentResponseDto;
 import com.aptBooker.backend.appointment.dto.response.AvailableTimesResponse;
 import com.aptBooker.backend.security.JwtUtil;
 import com.aptBooker.backend.services.dto.response.ServiceResponse;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -70,6 +72,33 @@ public class AppointmentController {
             appointmentErrorResponse.setErrorCode("FETCH_AVAILABLE_TIMES_FAILED");
             appointmentErrorResponse.setErrorMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(appointmentErrorResponse);
+        }
+    }
+
+    @GetMapping("/confirmed/{shopId}")
+    public ResponseEntity<?> getConfirmedAppointmentsByShopId(@PathVariable Long shopId,
+                                                             @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserid(token);
+        try {
+            List<AppointmentEntity> appointments = appointmentService.getConfirmedAppointmentsByShopId(shopId, userId);
+            List<AppointmentResponseDto> response = appointments.stream().map(appointment -> {
+                AppointmentResponseDto dto = new AppointmentResponseDto();
+                dto.setId(appointment.getId());
+                dto.setUserId(appointment.getUserId());
+                dto.setServiceId(appointment.getServiceId());
+                dto.setShopId(appointment.getShopId());
+                dto.setAppointmentDate(appointment.getAppointmentDate());
+                dto.setAppointmentTime(appointment.getAppointmentTime());
+                dto.setStatus(appointment.getStatus());
+                return dto;
+            }).toList();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            AppointmentErrorResponse error = new AppointmentErrorResponse();
+            error.setErrorCode("FETCH_CONFIRMED_APPOINTMENTS_FAILED");
+            error.setErrorMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
 }

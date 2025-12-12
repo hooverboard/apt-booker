@@ -74,6 +74,12 @@ public class ShopService {
         return shopRepository.findByHostId(hostId);
     }
 
+    // get shop by id
+    public ShopEntity getShopById(Long shopId) {
+        return shopRepository.findById(shopId)
+                .orElseThrow(() -> new RuntimeException("Shop not found"));
+    }
+
     // update shop
     // atualizar shop
     public ShopEntity updateShop(Long shopId, UpdateShopRequestDto updateShopRequestDto, Long hostId) {

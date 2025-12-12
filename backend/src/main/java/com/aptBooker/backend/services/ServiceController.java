@@ -88,5 +88,20 @@ public class ServiceController {
         }
 
     }
-}
 
+    @DeleteMapping("/{serviceId}")
+    public ResponseEntity<?> deleteService(@PathVariable Long serviceId,
+                                           @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long hostId = jwtUtil.extractUserid(token);
+        try {
+            serviceService.deleteService(serviceId, hostId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            ServiceErrorResponse errorResponse = new ServiceErrorResponse();
+            errorResponse.setErrorCode("DELETING SERVICE FAILED");
+            errorResponse.setErrorMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+    }
+}

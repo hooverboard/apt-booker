@@ -25,4 +25,6 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
             String status
     );
 
+    List<AppointmentEntity> findByShopIdAndStatus(Long shopId, String Status);
+
 }

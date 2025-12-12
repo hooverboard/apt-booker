@@ -1,6 +1,9 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "../context/Context";
 import "../css/EditServiceComponent.css";
+import toast from "react-hot-toast";
 
 export default function EditService({
   id,
@@ -10,7 +13,9 @@ export default function EditService({
   price,
   onUpdate,
   shopId,
+  onDelete,
 }) {
+  const { token } = useAuth();
   const [serviceData, setServiceData] = useState({
     id,
     name,
@@ -29,6 +34,12 @@ export default function EditService({
       ...prevData,
       [e.target.name]: e.target.value,
     }));
+  }
+
+  function handleDelete() {
+    if (onDelete) {
+      onDelete();
+    }
   }
 
   return (
@@ -68,7 +79,15 @@ export default function EditService({
             />
           </div>
         </div>
-        <button onClick={hadleUpdate}>Save</button>
+        <div className="service-card-button-area">
+          <button onClick={hadleUpdate}>Save</button>
+          <button
+            className="service-card-button-area-delete"
+            onClick={handleDelete}
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -27,14 +27,16 @@ export default function Home() {
         {user ? (
           <>
             <h2>Welcome, {user.name}!</h2>
-            {user.role === "host" && (
-              <div>
-                <button onClick={() => navigate("/shops/manage")}>
-                  Manage
-                </button>
-              </div>
-            )}
-            <button onClick={logout}>Logout</button>
+            <div className="user-info-buttons">
+              {user.role === "host" && (
+                <div>
+                  <button onClick={() => navigate("/shops/manage")}>
+                    Manage shops
+                  </button>
+                </div>
+              )}
+              <button onClick={logout}>Logout</button>
+            </div>
           </>
         ) : (
           <>

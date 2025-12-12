@@ -1,0 +1,22 @@
+.manage-bookings-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.appointments-area {
+  width: 70vw;
+  height: 80vh;
+}
+
+.appointment-card {
+  display: flex;
+  flex-direction: row;
+  background-color: #f4f4f4;
+  justify-content: space-around;
+  text-align: center;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}

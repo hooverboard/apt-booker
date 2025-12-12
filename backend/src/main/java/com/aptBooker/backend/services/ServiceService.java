@@ -84,4 +84,19 @@ public class ServiceService {
 
         return serviceRepository.save(service);
     }
+
+    public void deleteService(Long serviceId, Long hostId) {
+        // get the service
+        ServiceEntity service = serviceRepository.findById(serviceId)
+                .orElseThrow(() -> new RuntimeException("Service not found"));
+
+        // check is host owns the shop being deleted
+        ShopEntity shop = service.getShop();
+        if (!shop.getHostId().equals(hostId)) {
+            throw new RuntimeException("User does not own this shop");
+        }
+
+        // delete service
+        serviceRepository.delete(service);
+    }
 }
