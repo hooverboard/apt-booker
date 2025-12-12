@@ -9,6 +9,7 @@ import { AuthProvider } from "./context/Context";
 import CreateShop from "./pages/CreateShop";
 import ManageShops from "./pages/ManageShops";
 import EditShop from "./pages/EditShop";
+import EditShopServices from "./pages/EditShopServices";
 
 function App() {
   return (
@@ -23,6 +24,10 @@ function App() {
           <Route path="/shops/manage" element={<ManageShops />} />
           <Route path="/shops/:id/edit" element={<EditShop />} />
           <Route path="/shops/:id" element={<ShopPage />} />
+          <Route
+            path="/shops/:id/services/edit"
+            element={<EditShopServices />}
+          />
         </Routes>
       </Router>
     </AuthProvider>

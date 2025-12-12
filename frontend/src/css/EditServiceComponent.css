@@ -1,0 +1,73 @@
+.edit-service-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.edit-service-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* background-color: #005461; */
+  padding: 20px;
+  border-radius: 15px;
+  width: 40vw;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.387), 0 1.5px 4px rgba(0, 0, 0, 0.1);
+}
+
+.edit-service-section p {
+  color: black;
+}
+
+.edit-service-section button {
+  background-color: #00b7b5;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.718), 0 1.5px 4px rgba(0, 0, 0, 0.1);
+}
+
+.edit-service-container input {
+  width: 40%;
+  height: 33px;
+  margin-bottom: 18px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  text-align: center;
+  font-size: 1rem;
+  background-color: #0187909b;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 1.5px 4px rgba(0, 0, 0, 0.1);
+  min-width: 170px;
+}
+.edit-service-section .edit-service-description {
+  height: 15vh;
+  width: 90%;
+  text-align: center;
+  white-space: pre-wrap;
+  display: block;
+  padding: 8px;
+  border-radius: 9px;
+  border: none;
+  outline: none;
+  resize: none;
+  margin-bottom: 18px;
+  font-family: inherit;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: #0187909b;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 1.5px 4px rgba(0, 0, 0, 0.1);
+}
+
+.price-duration-area {
+  display: flex;
+  flex-direction: row;
+}
+.price-duration-area div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.price-duration-area input {
+  margin: 0px 10px;
+  margin-bottom: 18px;
+}

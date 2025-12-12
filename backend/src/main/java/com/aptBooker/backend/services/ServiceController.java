@@ -2,6 +2,7 @@ package com.aptBooker.backend.services;
 
 import com.aptBooker.backend.security.JwtUtil;
 import com.aptBooker.backend.services.dto.request.CreateServiceDto;
+import com.aptBooker.backend.services.dto.request.UpdateServiceRequestDto;
 import com.aptBooker.backend.services.dto.response.ServiceErrorResponse;
 import com.aptBooker.backend.services.dto.response.ServiceResponse;
 import jakarta.validation.Valid;
@@ -57,6 +58,35 @@ public class ServiceController {
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(serviceErrorResponse);
         }
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateService(@Valid @RequestBody UpdateServiceRequestDto updateServiceRequestDto,
+                                           @RequestHeader("Authorization") String authHeader){
+
+        //extract info from jwt
+        String token = authHeader.replace("Bearer ", "");
+        Long hostId = jwtUtil.extractUserid(token);
+
+        try {
+            ServiceEntity service = serviceService.updateService(updateServiceRequestDto, hostId);
+            ServiceResponse serviceResponse = new ServiceResponse();
+            serviceResponse.setName(service.getName());
+            serviceResponse.setDescription(service.getDescription());
+            serviceResponse.setPrice(service.getPrice());
+            serviceResponse.setDuration(service.getDuration());
+            serviceResponse.setId(service.getId());
+            serviceResponse.setShopId(service.getShop().getId());
+
+            return ResponseEntity.status(HttpStatus.OK).body(serviceResponse);
+        } catch (Exception e) {
+            ServiceErrorResponse serviceErrorResponse = new ServiceErrorResponse();
+            serviceErrorResponse.setErrorMessage(e.getMessage());
+            serviceErrorResponse.setErrorCode("UPDATING SERVICE FAILED");
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(serviceErrorResponse);
+        }
+
     }
 }
 

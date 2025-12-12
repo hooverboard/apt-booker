@@ -85,21 +85,35 @@ export default function ManageShops() {
                   {shop.closingTime.slice(0, 5)}
                 </p>
                 <div className="shop-services">
-                  <strong>Services:</strong>
-                  <ul>
-                    {shop.services.map((service) => (
-                      <li key={service.id}>
-                        {service.name} - ${service.price} ({service.duration}{" "}
-                        min)
-                      </li>
-                    ))}
-                  </ul>
+                  <div>
+                    <strong>Services:</strong>
+                    <ul>
+                      {shop.services.map((service) => (
+                        <li key={service.id}>
+                          {service.name} - ${service.price} ({service.duration}{" "}
+                          min)
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <button
+                    className="edit-service-btn"
+                    onClick={() => {
+                      navigate(`/shops/${shop.id}/services/edit`, {
+                        state: { shop },
+                      });
+                    }}
+                  >
+                    Edit services
+                  </button>
                 </div>
                 <div className="manage-shop-actions">
                   <button
                     className="edit-shop-btn"
                     onClick={() =>
-                      navigate(`/shops/${shop.id}/edit`, { state: { shop } })
+                      navigate(`/shops/${shop.id}/edit`, {
+                        state: { shop },
+                      })
                     }
                   >
                     Edit Shop

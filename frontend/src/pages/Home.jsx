@@ -29,9 +29,6 @@ export default function Home() {
             <h2>Welcome, {user.name}!</h2>
             {user.role === "host" && (
               <div>
-                <button onClick={() => navigate("/shops/create")}>
-                  Create shop
-                </button>
                 <button onClick={() => navigate("/shops/manage")}>
                   Manage
                 </button>

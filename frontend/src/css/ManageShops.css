@@ -1,7 +1,10 @@
 .manage-shops-container {
+  display: flex;
+  flex-direction: column;
   max-width: 1200px;
   margin: 40px auto;
   padding: 20px;
+  align-items: center;
 }
 
 .manage-shops-header {
@@ -9,6 +12,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+  gap: 30vw;
 }
 
 .manage-shops-header h1 {
@@ -19,7 +23,7 @@
 
 .create-shop-btn {
   padding: 12px 24px;
-  background-color: #4caf50;
+  background-color: #018790;
   color: white;
   border: none;
   border-radius: 5px;
@@ -30,7 +34,7 @@
 }
 
 .create-shop-btn:hover {
-  background-color: #45a049;
+  background-color: #00b7b5;
 }
 
 .no-shops {
@@ -66,6 +70,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 30px;
+  width: 40vw;
 }
 
 .manage-shop-card {
@@ -112,9 +117,16 @@
 }
 
 .shop-services {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
   margin-top: 15px;
   padding-top: 15px;
   border-top: 1px solid #eee;
+}
+
+.shop-services button {
+  height: 50px;
 }
 
 .shop-services strong {
@@ -134,6 +146,10 @@
   padding: 5px 0;
 }
 
+.edit-service-btn {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 1.5px 4px rgba(0, 0, 0, 0.1);
+}
+
 .manage-shop-actions {
   margin-top: 20px;
   display: flex;
@@ -143,7 +159,7 @@
 .edit-shop-btn {
   flex: 1;
   padding: 10px 20px;
-  background-color: #ff9800;
+  background-color: #018790;
   color: white;
   border: none;
   border-radius: 5px;
@@ -154,5 +170,5 @@
 }
 
 .edit-shop-btn:hover {
-  background-color: #e68900;
+  background-color: #00b7b5;
 }
