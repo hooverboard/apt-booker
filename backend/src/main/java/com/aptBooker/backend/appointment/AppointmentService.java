@@ -118,6 +118,9 @@ public class AppointmentService {
         return appointmentRepository.save(appointmentEntity);
     }
 
+
+
+    //GETS AVAILABLE TIMES WHEN USERS TRY TO BOOK A SERVICE
     public AvailableTimesResponse getAvailableTimes(Long shopId, Long serviceId, LocalDate date) {
         // get the shop and service
         //buscar o shop e servico
@@ -187,17 +190,68 @@ public class AppointmentService {
         return response;
     }
 
-    public List<AppointmentEntity> getConfirmedAppointmentsByShopId(Long shopId, Long userId) {
+
+
+
+    // GET SHOP'S CONFIRMED APPOINTMENTS BY THEIR ID
+    // FILTERS OUT APPOINTMENTS BASED ON "upcoming" or "past"
+    public List<AppointmentEntity> getConfirmedAppointmentsByShopId(Long shopId, Long userId, String type, LocalDate date) {
         ShopEntity shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new RuntimeException("Shop not found"));
-        if (!shop.getHostId().equals(userId)) {
-            throw new RuntimeException("You are not authorized to view these appointments");
+
+        //check user owns shop
+        //verificar que usuario e dono do shop
+        if (!userId.equals(shop.getHostId())){
+            throw new RuntimeException("User does not own the shop");
         }
-        return appointmentRepository.findByShopIdAndStatus(shopId, "confirmed");
+
+        if (date == null ) {
+            List<AppointmentEntity> all = appointmentRepository.findByShopId(shopId);
+            LocalDate today = LocalDate.now();
+            LocalTime rightNow = LocalTime.now();
+
+            //filter by "upcoming" or "past"
+            if("upcoming".equalsIgnoreCase(type)){
+                return all.stream()
+                        .filter(appointment -> appointment.getAppointmentDate().isAfter(today) ||
+                                (appointment.getAppointmentDate().isEqual(today) && appointment.getAppointmentTime().isAfter(rightNow)))
+                        .toList();
+            } else if ("past".equalsIgnoreCase(type)) {
+                return all.stream()
+                        .filter(appointment -> appointment.getAppointmentDate().isBefore(today) ||
+                                (appointment.getAppointmentDate().isEqual(today) && appointment.getAppointmentTime().isBefore(rightNow)))
+                        .toList();
+            } else {
+                throw new IllegalArgumentException("Invalid type parameter. Must be 'upcoming' or 'past'.");
+            }
+        } else {
+            return appointmentRepository.findByShopIdAndAppointmentDate(shopId, date);
+        }
+
     }
 
-    public List<AppointmentEntity> getUserAppointments(Long userId){
-        return appointmentRepository.findByUserId(userId);
+
+
+    //FETCHES SPECIFIC USER'S APPOINTMENTS
+    //FILTERS BY "upcoming" or "past"
+    public List<AppointmentEntity> getUserAppointments(Long userId, String type) {
+        List<AppointmentEntity> all = appointmentRepository.findByUserId(userId);
+        LocalDate today = LocalDate.now();
+        LocalTime rightNow = LocalTime.now();
+
+        if ("upcoming".equalsIgnoreCase(type)) {
+            return all.stream()
+                .filter(a -> a.getAppointmentDate().isAfter(today) ||
+                    (a.getAppointmentDate().isEqual(today) && a.getAppointmentTime().isAfter(rightNow)))
+                .toList();
+        } else if ("past".equalsIgnoreCase(type)) {
+            return all.stream()
+                .filter(a -> a.getAppointmentDate().isBefore(today) ||
+                    (a.getAppointmentDate().isEqual(today) && a.getAppointmentTime().isBefore(java.time.LocalTime.now())))
+                .toList();
+        } else {
+            throw new IllegalArgumentException("Invalid type parameter. Must be 'upcoming' or 'past'.");
+        }
     }
 
 

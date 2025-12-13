@@ -2,6 +2,49 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 30px;
+}
+
+.manage-bookings-filter {
+  display: flex;
+  flex-direction: column;
+}
+
+.manage-bookings-filter button {
+  background-color: #018790;
+  margin: 20px 0px;
+  color: white;
+}
+
+.manage-bookings-filter button:hover {
+  background-color: #005461;
+}
+
+.manage-bookings-filter input {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  margin-left: 10px;
+  width: 100px;
+  justify-content: center;
+  height: 40px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background-color: #018790;
+  color: white;
+  border: 10px;
+}
+
+.manage-bookings-filter-by-date {
+  display: flex;
+  background-color: #005461;
+  color: white;
+  height: 80px;
+  width: 30vw;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  padding: 5px;
 }
 
 .appointments-area {
@@ -11,12 +54,13 @@
 
 .appointment-card {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   background-color: #f4f4f4;
   justify-content: space-around;
   text-align: center;
   border-radius: 15px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  padding: 1rem;
-  margin-bottom: 1rem;
+  padding: 30px;
+  margin-bottom: 30px;
+  margin-top: 30px;
 }

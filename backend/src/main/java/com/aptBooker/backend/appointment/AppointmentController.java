@@ -6,7 +6,14 @@ import com.aptBooker.backend.appointment.dto.response.AppointmentResponse;
 import com.aptBooker.backend.appointment.dto.response.AppointmentResponseDto;
 import com.aptBooker.backend.appointment.dto.response.AvailableTimesResponse;
 import com.aptBooker.backend.security.JwtUtil;
+import com.aptBooker.backend.services.ServiceEntity;
+import com.aptBooker.backend.services.ServiceRepository;
 import com.aptBooker.backend.services.dto.response.ServiceResponse;
+import com.aptBooker.backend.shop.ShopRepository;
+import com.aptBooker.backend.shop.dto.response.ShopResponse;
+import com.aptBooker.backend.user.UserEntity;
+import com.aptBooker.backend.user.UserRepository;
+import com.aptBooker.backend.user.dto.request.UserRegistrationDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,6 +34,15 @@ public class AppointmentController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private ServiceRepository serviceRepository;
+
+    @Autowired
+    private ShopRepository shopRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping
     public ResponseEntity<?> createAppointment(@Valid @RequestBody CreateAppointmentRequestDto createAppointmentRequestDto,
@@ -77,20 +93,39 @@ public class AppointmentController {
 
     @GetMapping("/confirmed/{shopId}")
     public ResponseEntity<?> getConfirmedAppointmentsByShopId(@PathVariable Long shopId,
-                                                             @RequestHeader("Authorization") String authHeader) {
+                                                             @RequestHeader("Authorization") String authHeader,
+                                                              @RequestParam(name = "type", required = false, defaultValue = "upcoming") String type,
+                                                              @RequestParam(name = "date", required = false) LocalDate date) {
         String token = authHeader.replace("Bearer ", "");
         Long userId = jwtUtil.extractUserid(token);
         try {
-            List<AppointmentEntity> appointments = appointmentService.getConfirmedAppointmentsByShopId(shopId, userId);
+            List<AppointmentEntity> appointments = appointmentService.getConfirmedAppointmentsByShopId(shopId, userId, type, date);
             List<AppointmentResponseDto> response = appointments.stream().map(appointment -> {
                 AppointmentResponseDto dto = new AppointmentResponseDto();
                 dto.setId(appointment.getId());
                 dto.setUserId(appointment.getUserId());
-                dto.setServiceId(appointment.getServiceId());
                 dto.setShopId(appointment.getShopId());
                 dto.setAppointmentDate(appointment.getAppointmentDate());
                 dto.setAppointmentTime(appointment.getAppointmentTime());
                 dto.setStatus(appointment.getStatus());
+
+                serviceRepository.findById(appointment.getServiceId()).ifPresent(serviceItem -> {
+                    ServiceResponse serviceResponse = new ServiceResponse();
+                    serviceResponse.setId(serviceItem.getId());
+                    serviceResponse.setName(serviceItem.getName());
+                    serviceResponse.setDescription(serviceItem.getDescription());
+                    serviceResponse.setPrice(serviceItem.getPrice());
+                    serviceResponse.setDuration(serviceItem.getDuration());
+                    dto.setService(serviceResponse);
+                });
+
+                userRepository.findById(appointment.getUserId()).ifPresent(userItem -> {
+                    UserRegistrationDto userResponse = new UserRegistrationDto();
+                    userResponse.setName(userItem.getName());
+                    userResponse.setEmail(userItem.getEmail());
+                    dto.setUser(userResponse);
+                });
+
                 return dto;
             }).toList();
             return ResponseEntity.ok(response);
@@ -102,21 +137,44 @@ public class AppointmentController {
         }
     }
 
+
+
+
+
+
     @GetMapping("/my-appointments")
-    public ResponseEntity<?> getUserAppointment(@RequestHeader("Authorization") String authHeader){
+    public ResponseEntity<?> getUserAppointment(@RequestHeader("Authorization") String authHeader,
+                                                @RequestParam(name = "type", required = false, defaultValue = "all") String type) {
         String token = authHeader.replace("Bearer ", "");
         Long userId = jwtUtil.extractUserid(token);
 
-        try{
-            List<AppointmentEntity> appointments = appointmentService.getUserAppointments(userId);
+        try {
+            List<AppointmentEntity> appointments = appointmentService.getUserAppointments(userId, type);
             List<AppointmentResponseDto> response = appointments.stream().map(appointment -> {
                 AppointmentResponseDto dto = new AppointmentResponseDto();
                 dto.setId(appointment.getId());
                 dto.setUserId(appointment.getUserId());
-                dto.setShopId(appointment.getShopId());
-                dto.setServiceId(appointment.getServiceId());
                 dto.setAppointmentDate(appointment.getAppointmentDate());
                 dto.setAppointmentTime(appointment.getAppointmentTime());
+                dto.setStatus(appointment.getStatus());
+
+                serviceRepository.findById(appointment.getServiceId()).ifPresent(service -> {
+                    ServiceResponse serviceResponse = new ServiceResponse();
+                    serviceResponse.setId(service.getId());
+                    serviceResponse.setName(service.getName());
+                    serviceResponse.setDescription(service.getDescription());
+                    serviceResponse.setPrice(service.getPrice());
+                    serviceResponse.setDuration(service.getDuration());
+                    dto.setService(serviceResponse);
+                });
+
+                shopRepository.findById(appointment.getShopId()).ifPresent( shop -> {
+                    ShopResponse shopResponse = new ShopResponse();
+                    shopResponse.setName(shop.getName());
+                    shopResponse.setPhoneNumber(shop.getPhoneNumber());
+                    shopResponse.setAddress(shop.getAddress());
+                    dto.setShop(shopResponse);
+                });
 
                 return dto;
             }).toList();
@@ -124,7 +182,7 @@ public class AppointmentController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             AppointmentErrorResponse error = new AppointmentErrorResponse();
-            error.setErrorCode("FETCH_CONFIRMED_APPOINTMENTS_FAILED");
+            error.setErrorCode("FETCH_USER_APPOINTMENTS_FAILED");
             error.setErrorMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }

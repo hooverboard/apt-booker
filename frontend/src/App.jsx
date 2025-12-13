@@ -11,6 +11,8 @@ import ManageShops from "./pages/ManageShops";
 import EditShop from "./pages/EditShop";
 import EditShopServices from "./pages/EditShopServices";
 import ManageBookings from "./pages/ManageBookings";
+import MyAppointments from "./pages/MyAppointments";
+import UserAppointments from "./pages/UserAppointments";
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
             element={<EditShopServices />}
           />
           <Route path="/bookings/manage" element={<ManageBookings />} />
+          <Route path="/my-appointments" element={<UserAppointments />} />
         </Routes>
       </Router>
     </AuthProvider>

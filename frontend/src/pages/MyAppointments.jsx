@@ -40,11 +40,15 @@ export default function MyAppointments() {
   }, [token]);
 
   if (loading) {
-    return <div className="my-appointments-container">Loading appointments...</div>;
+    return (
+      <div className="my-appointments-container">Loading appointments...</div>
+    );
   }
 
   if (error) {
-    return <div className="my-appointments-container error-message">{error}</div>;
+    return (
+      <div className="my-appointments-container error-message">{error}</div>
+    );
   }
 
   return (
@@ -58,8 +62,6 @@ export default function MyAppointments() {
               <p>Date: {appt.appointmentDate}</p>
               <p>Time: {appt.appointmentTime}</p>
               <p>Status: {appt.status}</p>
-              {/* Add more details as needed, like service name or shop name if available */}
-              {/* For now, we only have serviceId and shopId */}
               <p>Service ID: {appt.serviceId}</p>
               <p>Shop ID: {appt.shopId}</p>
             </div>

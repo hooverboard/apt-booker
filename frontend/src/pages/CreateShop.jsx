@@ -4,9 +4,11 @@ import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/Context";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateShop() {
   const { token } = useAuth();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     name: "",
@@ -52,7 +54,10 @@ export default function CreateShop() {
   }
 
   return (
-    <div>
+    <div className="create-shop-container">
+      <button className="back-button" onClick={() => navigate(-1)}>
+        {"<"}
+      </button>
       <h1>Create your shop</h1>
       <form onSubmit={handleSubmit} className="form">
         <input
