@@ -62,7 +62,25 @@
   display: flex;
 }
 
-// responsive
+.my-appointments-area h2 {
+  text-align: center;
+}
+
+.home-appointment-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  margin: 20px 30px;
+}
+
+.home-appointment-card-container {
+  display: flex;
+}
+
+/* // responsive */
 
 /* @media (max-width: 768px) {
   .user-info{

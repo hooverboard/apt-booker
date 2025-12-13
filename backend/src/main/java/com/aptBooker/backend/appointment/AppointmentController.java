@@ -101,4 +101,32 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
+
+    @GetMapping("/my-appointments")
+    public ResponseEntity<?> getUserAppointment(@RequestHeader("Authorization") String authHeader){
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserid(token);
+
+        try{
+            List<AppointmentEntity> appointments = appointmentService.getUserAppointments(userId);
+            List<AppointmentResponseDto> response = appointments.stream().map(appointment -> {
+                AppointmentResponseDto dto = new AppointmentResponseDto();
+                dto.setId(appointment.getId());
+                dto.setUserId(appointment.getUserId());
+                dto.setShopId(appointment.getShopId());
+                dto.setServiceId(appointment.getServiceId());
+                dto.setAppointmentDate(appointment.getAppointmentDate());
+                dto.setAppointmentTime(appointment.getAppointmentTime());
+
+                return dto;
+            }).toList();
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            AppointmentErrorResponse error = new AppointmentErrorResponse();
+            error.setErrorCode("FETCH_CONFIRMED_APPOINTMENTS_FAILED");
+            error.setErrorMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+    }
 }

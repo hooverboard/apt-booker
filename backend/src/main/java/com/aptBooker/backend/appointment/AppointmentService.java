@@ -196,5 +196,9 @@ public class AppointmentService {
         return appointmentRepository.findByShopIdAndStatus(shopId, "confirmed");
     }
 
+    public List<AppointmentEntity> getUserAppointments(Long userId){
+        return appointmentRepository.findByUserId(userId);
+    }
+
 
 }
