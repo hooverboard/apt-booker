@@ -111,4 +111,16 @@ public class ShopService {
 
         return shopRepository.save(shop);
     }
+
+    public ShopEntity deleteShop(Long hostId, Long shopId){
+        ShopEntity shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new RuntimeException("Shop not found"));
+
+        if (!hostId.equals(shop.getHostId())){
+            throw new RuntimeException("User does not own the shop");
+        }
+
+        shopRepository.delete(shop);
+        return shop;
+    }
 }

@@ -1,5 +1,6 @@
 package com.aptBooker.backend.appointment;
 
+import com.aptBooker.backend.shop.ShopEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,7 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
 
     //find all appointments for a specific shop
     //econtrar todos os agendamentos de uma loja
-    List<AppointmentEntity> findByShopId(Long shopId);
+    List<AppointmentEntity> findByShop(ShopEntity shop);
 
     //find appointments by date
     //encontrar agedamentos por data
@@ -19,16 +20,16 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
 
     //find appointments by shopId, Date and status
     //econtrar com shopId, data e status
-    List<AppointmentEntity> findByShopIdAndAppointmentDateAndStatus(
-            Long shopId,
+    List<AppointmentEntity> findByShopAndAppointmentDateAndStatus(
+            ShopEntity shop,
             LocalDate appointmentDate,
             String status
     );
 
-    List<AppointmentEntity> findByShopIdAndStatus(Long shopId, String Status);
+    List<AppointmentEntity> findByShopAndStatus(ShopEntity shop, String Status);
 
     List<AppointmentEntity> findByUserId(Long userId);
 
-    List<AppointmentEntity> findByShopIdAndAppointmentDate(Long shopId, LocalDate appointmentDate);
+    List<AppointmentEntity> findByShopAndAppointmentDate(ShopEntity shop, LocalDate appointmentDate);
 
 }

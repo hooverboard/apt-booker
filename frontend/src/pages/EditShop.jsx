@@ -51,7 +51,6 @@ export default function EditShop() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation
     if (!formData.name || !formData.address || !formData.phoneNumber) {
       toast.error("Please fill in all required fields");
       return;
@@ -92,6 +91,28 @@ export default function EditShop() {
       toast.error(errorMessage);
     }
   };
+
+  async function handleDelete() {
+    const ok = window.confirm("Are you sure you want to delete this shop?");
+
+    if (ok) {
+      try {
+        const res = axios.delete(`http://localhost:8080/api/shops/${shop.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        console.log("RES: ", res);
+        toast.success("Shop deleted");
+      } catch (error) {
+        console.log("ERROR: ", error);
+        toast.error("Failed to delete");
+      }
+    } else {
+      return;
+    }
+  }
 
   return (
     <div className="edit-shop-container">
@@ -195,6 +216,9 @@ export default function EditShop() {
         </div>
 
         <div className="form-actions">
+          <button type="button" onClick={handleDelete}>
+            Delete
+          </button>
           <button type="submit" className="save-btn">
             Save Changes
           </button>

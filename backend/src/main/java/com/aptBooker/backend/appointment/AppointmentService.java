@@ -78,11 +78,10 @@ public class AppointmentService {
         //check if time overlaps existing appointments
         // verificar se ja nao existe um agendamento no mesmo horario
         List<AppointmentEntity> existingAppointments = appointmentRepository
-                .findByShopIdAndAppointmentDateAndStatus(shopId, appointmentDate, "confirmed");
+                .findByShopAndAppointmentDateAndStatus(shop, appointmentDate, "confirmed");
 
         for (AppointmentEntity existing : existingAppointments) {
-            ServiceEntity existingService = serviceRepository.findById(existing.getServiceId())
-                    .orElseThrow(() -> new RuntimeException("Existing service not found"));
+            ServiceEntity existingService = existing.getService();
 
             Integer existingServiceDuration = existingService.getDuration();
             LocalTime existingAppointmentStarttime = existing.getAppointmentTime();
@@ -111,8 +110,8 @@ public class AppointmentService {
         //criar resposta
         AppointmentEntity appointmentEntity = new AppointmentEntity();
         appointmentEntity.setUserId(userId);
-        appointmentEntity.setServiceId(serviceId);
-        appointmentEntity.setShopId(shopId);
+        appointmentEntity.setService(service);
+        appointmentEntity.setShop(shop);
         appointmentEntity.setAppointmentDate(appointmentDate);
         appointmentEntity.setAppointmentTime(appointmentTime);
         return appointmentRepository.save(appointmentEntity);
@@ -161,7 +160,7 @@ public class AppointmentService {
         // get existing appointments for this shop and date
         // buscar agendamentos que ja existem desta data para o shop
         List<AppointmentEntity> existingAppointments = appointmentRepository
-                .findByShopIdAndAppointmentDateAndStatus(shopId, date, "confirmed");
+                .findByShopAndAppointmentDateAndStatus(shop, date, "confirmed");
 
         // remove slots that overlap with existing appointments
         // remover horarios que ja estao agendados
@@ -169,8 +168,7 @@ public class AppointmentService {
             LocalTime slotEndTime = slot.plusMinutes(serviceDuration);
             
             for (AppointmentEntity existing : existingAppointments) {
-                ServiceEntity existingService = serviceRepository.findById(existing.getServiceId())
-                        .orElse(null);
+                ServiceEntity existingService = existing.getService();
                 if (existingService == null) continue;
 
                 LocalTime existingStart = existing.getAppointmentTime();
@@ -206,7 +204,7 @@ public class AppointmentService {
         }
 
         if (date == null ) {
-            List<AppointmentEntity> all = appointmentRepository.findByShopId(shopId);
+            List<AppointmentEntity> all = appointmentRepository.findByShop(shop);
             LocalDate today = LocalDate.now();
             LocalTime rightNow = LocalTime.now();
 
@@ -225,7 +223,7 @@ public class AppointmentService {
                 throw new IllegalArgumentException("Invalid type parameter. Must be 'upcoming' or 'past'.");
             }
         } else {
-            return appointmentRepository.findByShopIdAndAppointmentDate(shopId, date);
+            return appointmentRepository.findByShopAndAppointmentDate(shop, date);
         }
 
     }
@@ -247,9 +245,12 @@ public class AppointmentService {
         } else if ("past".equalsIgnoreCase(type)) {
             return all.stream()
                 .filter(a -> a.getAppointmentDate().isBefore(today) ||
-                    (a.getAppointmentDate().isEqual(today) && a.getAppointmentTime().isBefore(java.time.LocalTime.now())))
+                    (a.getAppointmentDate().isEqual(today) && a.getAppointmentTime().isBefore(rightNow)))
                 .toList();
-        } else {
+        } else if ("all".equalsIgnoreCase(type)) {
+            return all;
+        }
+        else {
             throw new IllegalArgumentException("Invalid type parameter. Must be 'upcoming' or 'past'.");
         }
     }

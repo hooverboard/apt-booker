@@ -1,5 +1,7 @@
 package com.aptBooker.backend.appointment;
 
+import com.aptBooker.backend.services.ServiceEntity;
+import com.aptBooker.backend.shop.ShopEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,11 +23,13 @@ public class AppointmentEntity {
     @Column(nullable = false)
     private Long userId;
 
-    @Column(nullable = false)
-    private Long serviceId;
+    @ManyToOne
+    @JoinColumn(name = "service_id", nullable = false)
+    private ServiceEntity service;
 
-    @Column(nullable = false)
-    private Long shopId;
+    @ManyToOne
+    @JoinColumn(name = "shop_id", nullable = false)
+    private ShopEntity shop;
 
     @Column(nullable = false)
     private LocalDate appointmentDate;

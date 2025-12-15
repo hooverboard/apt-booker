@@ -12,8 +12,6 @@ import java.time.LocalTime;
 public class AppointmentResponseDto {
     private Long id;
     private Long userId;
-    private Long serviceId;
-    private Long shopId;
     private LocalDate appointmentDate;
     private LocalTime appointmentTime;
     private String status;

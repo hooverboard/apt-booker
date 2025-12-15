@@ -1,5 +1,6 @@
 package com.aptBooker.backend.shop;
 
+import com.aptBooker.backend.appointment.AppointmentEntity;
 import com.aptBooker.backend.services.ServiceEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -43,6 +44,10 @@ public class ShopEntity {
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServiceEntity> services = new ArrayList<>();
+
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AppointmentEntity> appointments = new ArrayList<>();
+
 
 
 }

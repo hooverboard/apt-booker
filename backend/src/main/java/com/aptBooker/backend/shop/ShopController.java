@@ -252,4 +252,22 @@ public class ShopController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteShop(@RequestHeader("Authorization") String authHeader,
+                                        @PathVariable("id") Long shopId){
+        String token = authHeader.replace("Bearer ", "");
+        Long hostId = jwtUtil.extractUserid(token);
+
+        try{
+            ShopEntity deleteShop = shopService.deleteShop(hostId, shopId);
+
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            ShopErrorResponse error = new ShopErrorResponse();
+            error.setErrorMessage(e.getMessage());
+            error.setErrorCode("GET SHOP BY ID FAILED");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+    }
 }

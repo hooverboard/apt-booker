@@ -1,10 +1,13 @@
 package com.aptBooker.backend.services;
 
+import com.aptBooker.backend.appointment.AppointmentEntity;
 import com.aptBooker.backend.shop.ShopEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -30,5 +33,9 @@ public class ServiceEntity {
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
     private ShopEntity shop;
+
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AppointmentEntity> appointments = new ArrayList<>();
+
 
 }

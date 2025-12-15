@@ -9,6 +9,7 @@ import com.aptBooker.backend.security.JwtUtil;
 import com.aptBooker.backend.services.ServiceEntity;
 import com.aptBooker.backend.services.ServiceRepository;
 import com.aptBooker.backend.services.dto.response.ServiceResponse;
+import com.aptBooker.backend.shop.ShopEntity;
 import com.aptBooker.backend.shop.ShopRepository;
 import com.aptBooker.backend.shop.dto.response.ShopResponse;
 import com.aptBooker.backend.user.UserEntity;
@@ -58,8 +59,8 @@ public class AppointmentController {
             AppointmentResponse response = new AppointmentResponse();
             response.setId(appointment.getId());
             response.setUserId(appointment.getUserId());
-            response.setServiceId(appointment.getServiceId());
-            response.setShopId(appointment.getShopId());
+            response.setServiceId(appointment.getService().getId());
+            response.setShopId(appointment.getShop().getId());
             response.setAppointmentDate(appointment.getAppointmentDate());
             response.setAppointmentTime(appointment.getAppointmentTime());
             response.setStatus(appointment.getStatus());
@@ -96,6 +97,8 @@ public class AppointmentController {
                                                              @RequestHeader("Authorization") String authHeader,
                                                               @RequestParam(name = "type", required = false, defaultValue = "upcoming") String type,
                                                               @RequestParam(name = "date", required = false) LocalDate date) {
+            ShopEntity shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new RuntimeException("Shop not found"));
         String token = authHeader.replace("Bearer ", "");
         Long userId = jwtUtil.extractUserid(token);
         try {
@@ -104,12 +107,12 @@ public class AppointmentController {
                 AppointmentResponseDto dto = new AppointmentResponseDto();
                 dto.setId(appointment.getId());
                 dto.setUserId(appointment.getUserId());
-                dto.setShopId(appointment.getShopId());
                 dto.setAppointmentDate(appointment.getAppointmentDate());
                 dto.setAppointmentTime(appointment.getAppointmentTime());
                 dto.setStatus(appointment.getStatus());
 
-                serviceRepository.findById(appointment.getServiceId()).ifPresent(serviceItem -> {
+                ServiceEntity serviceItem = appointment.getService();
+                if (serviceItem != null) {
                     ServiceResponse serviceResponse = new ServiceResponse();
                     serviceResponse.setId(serviceItem.getId());
                     serviceResponse.setName(serviceItem.getName());
@@ -117,7 +120,14 @@ public class AppointmentController {
                     serviceResponse.setPrice(serviceItem.getPrice());
                     serviceResponse.setDuration(serviceItem.getDuration());
                     dto.setService(serviceResponse);
-                });
+                }
+
+                ShopResponse shopResponse = new ShopResponse();
+                shopResponse.setName(shop.getName());
+                shopResponse.setPhoneNumber(shop.getPhoneNumber());
+                shopResponse.setAddress(shop.getAddress());
+                dto.setShop(shopResponse);
+
 
                 userRepository.findById(appointment.getUserId()).ifPresent(userItem -> {
                     UserRegistrationDto userResponse = new UserRegistrationDto();
@@ -158,7 +168,8 @@ public class AppointmentController {
                 dto.setAppointmentTime(appointment.getAppointmentTime());
                 dto.setStatus(appointment.getStatus());
 
-                serviceRepository.findById(appointment.getServiceId()).ifPresent(service -> {
+                ServiceEntity service = appointment.getService();
+                if (service != null) {
                     ServiceResponse serviceResponse = new ServiceResponse();
                     serviceResponse.setId(service.getId());
                     serviceResponse.setName(service.getName());
@@ -166,15 +177,16 @@ public class AppointmentController {
                     serviceResponse.setPrice(service.getPrice());
                     serviceResponse.setDuration(service.getDuration());
                     dto.setService(serviceResponse);
-                });
+                }
 
-                shopRepository.findById(appointment.getShopId()).ifPresent( shop -> {
+                ShopEntity shop = appointment.getShop();
+                if (shop != null) {
                     ShopResponse shopResponse = new ShopResponse();
                     shopResponse.setName(shop.getName());
                     shopResponse.setPhoneNumber(shop.getPhoneNumber());
                     shopResponse.setAddress(shop.getAddress());
                     dto.setShop(shopResponse);
-                });
+                }
 
                 return dto;
             }).toList();
