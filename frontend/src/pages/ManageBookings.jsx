@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../context/Context";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function ManageBookings() {
   const location = useLocation();
@@ -46,6 +47,25 @@ export default function ManageBookings() {
 
     if (appointmentType === "past") {
       setAppointmentType("upcoming");
+    }
+  }
+
+  async function handleDelete(aptId) {
+    try {
+      const res = await axios.delete(
+        `http://localhost:8080/api/appointments/${aptId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Appointment deleted");
+      console.log("RES: ", res);
+      window.location.reload();
+    } catch (error) {
+      console.log("ERROR: ", error);
+      toast.error("Failed to delete");
     }
   }
 
@@ -95,6 +115,7 @@ export default function ManageBookings() {
                 <strong>Time: </strong>
                 {apt.appointmentTime}
               </p>
+              <button onClick={() => handleDelete(apt.id)}>Delete</button>
             </div>
           ))
         ) : (

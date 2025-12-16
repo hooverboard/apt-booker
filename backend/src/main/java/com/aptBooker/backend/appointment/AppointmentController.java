@@ -199,4 +199,22 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
+
+    @DeleteMapping("/{appointmentId}")
+    public ResponseEntity<?> deleteAppointment(@RequestHeader("Authorization") String authHeader,
+                                               @PathVariable Long appointmentId){
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserid(token);
+
+        try {
+            AppointmentEntity appointment = appointmentService.deleteAppointment(userId, appointmentId);
+
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            AppointmentErrorResponse error = new AppointmentErrorResponse();
+            error.setErrorCode("FETCH_USER_APPOINTMENTS_FAILED");
+            error.setErrorMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+    }
 }

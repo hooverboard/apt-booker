@@ -255,5 +255,23 @@ public class AppointmentService {
         }
     }
 
+    public AppointmentEntity deleteAppointment(Long userId, Long appointmentId){
+        // check if user created the appointment or if the user is the host of the shop
+        AppointmentEntity appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+        ShopEntity shop = shopRepository.findById(appointment.getShop().getId())
+                .orElseThrow(() -> new RuntimeException("Shop not found"));
+
+        if (userId.equals(shop.getHostId()) || userId.equals(appointment.getUserId())){
+            appointmentRepository.delete(appointment);
+            return appointment;
+
+        } else {
+            throw new RuntimeException("Forbidden request");
+        }
+
+
+    }
+
 
 }

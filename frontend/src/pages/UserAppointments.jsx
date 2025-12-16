@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../context/Context";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const UserAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -48,6 +49,25 @@ const UserAppointments = () => {
     }
   }
 
+  async function handleDelete(aptId) {
+    try {
+      const res = await axios.delete(
+        `http://localhost:8080/api/appointments/${aptId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Appointment deleted");
+      console.log("RES: ", res);
+      window.location.reload();
+    } catch (error) {
+      console.log("ERROR: ", error);
+      toast.error("Failed to delete");
+    }
+  }
+
   return (
     <div className="user-appointments-container">
       <button className="back-button" onClick={() => navigate(-1)}>
@@ -74,6 +94,9 @@ const UserAppointments = () => {
               <p>{appointment.shop.address}</p>
               <strong>Phone number</strong>
               <p>{appointment.shop.phoneNumber}</p>
+              <button onClick={() => handleDelete(appointment.id)}>
+                Delete
+              </button>
             </div>
           ))
         ) : (
