@@ -2,9 +2,9 @@
 
 Deployed site: https://apt-booker.vercel.app
 
-Database: deplyed on Render
-Backend: deployed on Render
-Frontend: deplyed on Vercel
+Database: deplyed on Render  
+Backend: deployed on Render  
+Frontend: deplyed on Vercel  
 
 Apt-Booker is a full-stack web application that allows users to book appointments with various shops and enables shop owners to manage their services and bookings.
 
