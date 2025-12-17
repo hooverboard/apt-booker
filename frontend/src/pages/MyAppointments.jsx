@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axiosConfig";
 import { useAuth } from "../context/Context";
 import "../css/MyAppointments.css"; // We'll create this CSS file
 
@@ -19,8 +19,8 @@ export default function MyAppointments() {
 
       try {
         setLoading(true);
-        const res = await axios.get(
-          "http://localhost:8080/api/appointments/my-appointments",
+        const res = await api.get(
+          "/api/appointments/my-appointments",
           {
             headers: {
               Authorization: `Bearer ${token}`,

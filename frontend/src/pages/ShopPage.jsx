@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axiosConfig";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/Context";
 import "../css/ShopPage.css";
@@ -33,8 +33,8 @@ export default function ShopPage() {
       }
 
       try {
-        const response = await axios.get(
-          "http://localhost:8080/api/appointments/available-times",
+        const response = await api.get(
+          "/api/appointments/available-times",
           {
             params: {
               shopId: shop.id,
@@ -81,8 +81,8 @@ export default function ShopPage() {
         appointmentTime: selectedTime + ":00",
       };
 
-      await axios.post(
-        "http://localhost:8080/api/appointments",
+      await api.post(
+        "/api/appointments",
         appointmentData,
         {
           headers: {

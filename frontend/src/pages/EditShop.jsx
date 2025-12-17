@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axiosConfig";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/Context";
 import "../css/EditShop.css";
@@ -72,8 +72,8 @@ export default function EditShop() {
         closingTime: formData.closingTime + ":00",
       };
 
-      await axios.put(
-        `http://localhost:8080/api/shops/${shop.id}`,
+      await api.put(
+        `/api/shops/${shop.id}`,
         updateData,
         {
           headers: {
@@ -97,7 +97,7 @@ export default function EditShop() {
 
     if (ok) {
       try {
-        const res = axios.delete(`http://localhost:8080/api/shops/${shop.id}`, {
+        const res = api.delete(`/api/shops/${shop.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import EditService from "../components/EditService";
-import axios from "axios";
+import api from "../api/axiosConfig";
 import { useAuth } from "../context/Context";
 import toast from "react-hot-toast";
 import "../css/EditShopServicesPage.css";
@@ -29,7 +29,7 @@ export default function EditShopServices() {
       )
     );
     try {
-      await axios.put("http://localhost:8080/api/services", updatedData, {
+      await api.put("/api/services", updatedData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -42,8 +42,8 @@ export default function EditShopServices() {
 
   async function fetchServices() {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/shops/${shop.id}`,
+      const res = await api.get(
+        `/api/shops/${shop.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -58,7 +58,7 @@ export default function EditShopServices() {
 
   async function handleServiceDelete(serviceId) {
     try {
-      await axios.delete(`http://localhost:8080/api/services/${serviceId}`, {
+      await api.delete(`/api/services/${serviceId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -77,7 +77,7 @@ export default function EditShopServices() {
   async function createNewService() {
     console.log("Attempting to create service...");
     try {
-      await axios.post("http://localhost:8080/api/services", blankService, {
+      await api.post("/api/services", blankService, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

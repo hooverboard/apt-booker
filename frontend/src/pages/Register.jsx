@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import axios from "axios";
+import api from "../api/axiosConfig";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import "../css/Register.css";
@@ -25,8 +25,8 @@ export default function Register() {
 
     try {
       console.log("attempting to register with data:", form);
-      let res = await axios.post(
-        "http://localhost:8080/api/auth/register",
+      let res = await api.post(
+        "/api/auth/register",
         form
       );
       console.log(res);

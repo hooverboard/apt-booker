@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axiosConfig";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/Context";
 import "../css/ManageShops.css";
@@ -13,8 +13,8 @@ export default function ManageShops() {
   useEffect(() => {
     const fetchMyShops = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8080/api/shops/my-shops",
+        const response = await api.get(
+          "/api/shops/my-shops",
           {
             headers: {
               Authorization: `Bearer ${token}`,

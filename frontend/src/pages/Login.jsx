@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import axios from "axios";
+import api from "../api/axiosConfig";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../context/Context";
 import { useNavigate, Link } from "react-router-dom";
@@ -26,7 +26,7 @@ export default function Login() {
     //enviar dados de login para o backend
     try {
       console.log("attempting to login with data:", form);
-      let res = await axios.post("http://localhost:8080/api/auth/login", form);
+      let res = await api.post("/api/auth/login", form);
       console.log("User logged in successfully", res.data);
       toast.success("Login successful");
 

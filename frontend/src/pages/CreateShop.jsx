@@ -1,7 +1,7 @@
 import React from "react";
 import "../css/CreateShop.css";
 import { useState } from "react";
-import axios from "axios";
+import api from "../api/axiosConfig";
 import { useAuth } from "../context/Context";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -40,7 +40,7 @@ export default function CreateShop() {
       toast.error("All fields are required");
     }
     try {
-      const res = await axios.post("http://localhost:8080/api/shops", form, {
+      const res = await api.post("/api/shops", form, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

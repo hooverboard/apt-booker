@@ -3,7 +3,7 @@ import "../css/Home.css";
 import { useAuth } from "../context/Context";
 import ShopCard from "../components/ShopCard";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
@@ -14,7 +14,7 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchShops() {
-      const res = await axios.get("http://localhost:8080/api/shops");
+      const res = await api.get("/api/shops");
 
       console.log(res);
       setShopList(res.data);

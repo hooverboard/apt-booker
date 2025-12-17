@@ -1,7 +1,7 @@
 import React from "react";
 import "../css/UserAppointments.css";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axiosConfig";
 import { useAuth } from "../context/Context";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -16,8 +16,8 @@ const UserAppointments = () => {
     async function getAppointments() {
       try {
         console.log("attempting to fetch appointments");
-        const res = await axios.get(
-          "http://localhost:8080/api/appointments/my-appointments",
+        const res = await api.get(
+          "/api/appointments/my-appointments",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -51,8 +51,8 @@ const UserAppointments = () => {
 
   async function handleDelete(aptId) {
     try {
-      const res = await axios.delete(
-        `http://localhost:8080/api/appointments/${aptId}`,
+      const res = await api.delete(
+        `/api/appointments/${aptId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
