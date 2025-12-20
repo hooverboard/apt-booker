@@ -1,5 +1,8 @@
 package com.aptBooker.backend.user;
 
+import com.aptBooker.backend.exceptions.InvalidCredentialsException;
+import com.aptBooker.backend.exceptions.ResourceNotFoundException;
+import com.aptBooker.backend.exceptions.UserAlreadyExistsException;
 import com.aptBooker.backend.security.JwtUtil;
 import com.aptBooker.backend.user.dto.response.AuthResponseDto;
 import com.aptBooker.backend.user.dto.response.UserDto;
@@ -44,7 +47,7 @@ public class UserService {
         //check if user already exists
         //verificar se o usuario ja existe
         if (userRepository.existsByEmail(email)) {
-            throw new RuntimeException("Email is already taken");
+            throw new UserAlreadyExistsException("Email is already taken");
         }
 
         //create new user
@@ -73,13 +76,13 @@ public class UserService {
         Optional<UserEntity> user = userRepository.findByEmail(email);
 
         if (user.isEmpty()){
-            throw new RuntimeException("User not found");
+            throw new ResourceNotFoundException("User not found");
         }
 
         //check if pw is correct
         //checar se a senha esta correta
         if(!user.get().getPassword().equals(password)){
-            throw new RuntimeException("Incorrect password");
+            throw new InvalidCredentialsException("Incorrect password");
         }
 
         //generate jwt token
