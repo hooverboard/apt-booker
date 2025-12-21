@@ -16,17 +16,14 @@ const UserAppointments = () => {
     async function getAppointments() {
       try {
         console.log("attempting to fetch appointments");
-        const res = await api.get(
-          "/api/appointments/my-appointments",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            params: {
-              type: `${appointmentType}`,
-            },
-          }
-        );
+        const res = await api.get("/api/appointments/my-appointments", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            type: `${appointmentType}`,
+          },
+        });
         console.log("appointments fetched");
         setAppointments([]);
         setAppointments(res.data);
@@ -51,14 +48,11 @@ const UserAppointments = () => {
 
   async function handleDelete(aptId) {
     try {
-      const res = await api.delete(
-        `/api/appointments/${aptId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await api.delete(`/api/appointments/${aptId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       toast.success("Appointment deleted");
       console.log("RES: ", res);
       window.location.reload();
@@ -82,19 +76,19 @@ const UserAppointments = () => {
       <div className="user-appointments-card-area">
         {appointments.length > 0 ? (
           appointments.map((appointment) => (
-            <div className="user-appointments-card">
-              <h3 key={appointment.id}>{appointment.service.name}</h3>
+            <div className="user-appointments-card" key={appointment?.id}>
+              <h3>{appointment?.service?.name || "-"}</h3>
               <strong>Shop</strong>
-              <p>{appointment.shop.name}</p>
+              <p>{appointment?.shop?.name || "-"}</p>
               <strong>Date</strong>
-              <p>{appointment.appointmentDate}</p>
+              <p>{appointment?.appointmentDate || "-"}</p>
               <strong>Time</strong>
-              <p>{appointment.appointmentTime.slice(0, 5)}</p>
+              <p>{appointment?.appointmentTime?.slice(0, 5) || "-"}</p>
               <strong>Address</strong>
-              <p>{appointment.shop.address}</p>
+              <p>{appointment?.shop?.address || "-"}</p>
               <strong>Phone number</strong>
-              <p>{appointment.shop.phoneNumber}</p>
-              <button onClick={() => handleDelete(appointment.id)}>
+              <p>{appointment?.shop?.phoneNumber || "-"}</p>
+              <button onClick={() => handleDelete(appointment?.id)}>
                 Delete
               </button>
             </div>

@@ -1,12 +1,18 @@
 package com.aptBooker.backend.shop;
 
+import com.aptBooker.backend.exceptions.ResourceNotFoundException;
+import com.aptBooker.backend.exceptions.TimeMismatchException;
+import com.aptBooker.backend.exceptions.UnauthorizedActionException;
+import com.aptBooker.backend.services.dto.response.ServiceResponse;
 import com.aptBooker.backend.shop.dto.request.CreateShopRequestDto;
 import com.aptBooker.backend.shop.dto.request.UpdateShopRequestDto;
+import com.aptBooker.backend.shop.dto.response.ShopResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ShopService {
@@ -18,89 +24,152 @@ public class ShopService {
         this.shopRepository = shopRepository;
     }
 
-    //create shop method
-    //criar shop
-    public ShopEntity createShop(CreateShopRequestDto createShopRequestDto, Long hostId){
-        //extract shop details from dto
-        //extrair detalhes do shop do dto
-
-        String name = createShopRequestDto.getName();
-        String address = createShopRequestDto.getAddress();
-        String phoneNumber = createShopRequestDto.getPhoneNumber();
-        String description = createShopRequestDto.getDescription();
-        String imageUrl = createShopRequestDto.getImageUrl();
-        LocalTime openingTime = createShopRequestDto.getOpeningTime();
-        LocalTime closingTime = createShopRequestDto.getClosingTime();
-
-        // Debug log to check what imageUrl value is being received
-        System.out.println("DEBUG - Received imageUrl: '" + imageUrl + "' (is null: " + (imageUrl == null) + ", is empty: " + (imageUrl != null && imageUrl.isEmpty()) + ")");
-
-        //validation
-        //validacao
+    public ShopResponse createShop(CreateShopRequestDto createShopRequestDto, Long hostId){
         if(hostId == null){
-            throw new RuntimeException("Host ID is required");
+            throw new UnauthorizedActionException("Host ID cannot be null");
         }
 
-        if(closingTime.isBefore(openingTime)){
-            throw new RuntimeException("Closing time must be after opening time");
+        if(createShopRequestDto.getClosingTime().isBefore(createShopRequestDto.getOpeningTime())){
+            throw new TimeMismatchException("Closing time must be after opening time");
         }
 
-        //create new shop and save
-        //criar shop novo e salvar
         ShopEntity newShop = new ShopEntity();
-        newShop.setName(name);
-        newShop.setAddress(address);
-        newShop.setPhoneNumber(phoneNumber);
-        newShop.setDescription(description);
-        newShop.setImageUrl(imageUrl);
-        newShop.setOpeningTime(openingTime);
-        newShop.setClosingTime(closingTime);
+        newShop.setName(createShopRequestDto.getName());
+        newShop.setAddress(createShopRequestDto.getAddress());
+        newShop.setPhoneNumber(createShopRequestDto.getPhoneNumber());
+        newShop.setDescription(createShopRequestDto.getDescription());
+        newShop.setImageUrl(createShopRequestDto.getImageUrl());
+        newShop.setOpeningTime(createShopRequestDto.getOpeningTime());
+        newShop.setClosingTime(createShopRequestDto.getClosingTime());
         newShop.setHostId(hostId);
-        shopRepository.save(newShop);
+        ShopEntity savedShop = shopRepository.save(newShop);
 
-        return newShop;
+        ShopResponse shopResponse = new ShopResponse();
+        shopResponse.setId(savedShop.getId());
+        shopResponse.setName(savedShop.getName());
+        shopResponse.setAddress(savedShop.getAddress());
+        shopResponse.setDescription(savedShop.getDescription());
+        shopResponse.setPhoneNumber(savedShop.getPhoneNumber());
+        shopResponse.setOpeningTime(savedShop.getOpeningTime());
+        shopResponse.setClosingTime(savedShop.getClosingTime());
+        shopResponse.setHostId(savedShop.getHostId());
+        shopResponse.setImageUrl(savedShop.getImageUrl());
+        shopResponse.setServices(savedShop.getServices().stream()
+                .map(service -> {
+                    ServiceResponse serviceResponse = new ServiceResponse();
+                    serviceResponse.setId(service.getId());
+                    serviceResponse.setName(service.getName());
+                    serviceResponse.setPrice(service.getPrice());
+                    serviceResponse.setDuration(service.getDuration());
+                    serviceResponse.setDescription(service.getDescription());
+                    return serviceResponse;
+                })
+                .collect(Collectors.toList()));
+        return shopResponse;
     }
 
-    // get all shops
-    // get request para todos os shops
-
-    public List<ShopEntity> getAllShops(){
-        return shopRepository.findAll();
+    public List<ShopResponse> getAllShops(){
+        List<ShopEntity> shops = shopRepository.findAll();
+        return shops.stream()
+                .map(shop -> {
+                    ShopResponse shopResponse = new ShopResponse();
+                    shopResponse.setId(shop.getId());
+                    shopResponse.setName(shop.getName());
+                    shopResponse.setAddress(shop.getAddress());
+                    shopResponse.setDescription(shop.getDescription());
+                    shopResponse.setPhoneNumber(shop.getPhoneNumber());
+                    shopResponse.setOpeningTime(shop.getOpeningTime());
+                    shopResponse.setClosingTime(shop.getClosingTime());
+                    shopResponse.setHostId(shop.getHostId());
+                    shopResponse.setImageUrl(shop.getImageUrl());
+                    shopResponse.setServices(shop.getServices().stream()
+                            .map(service -> {
+                                ServiceResponse serviceResponse = new ServiceResponse();
+                                serviceResponse.setId(service.getId());
+                                serviceResponse.setName(service.getName());
+                                serviceResponse.setPrice(service.getPrice());
+                                serviceResponse.setDuration(service.getDuration());
+                                serviceResponse.setDescription(service.getDescription());
+                                return serviceResponse;
+                            })
+                            .collect(Collectors.toList()));
+                    return shopResponse;
+                })
+                .collect(Collectors.toList());
     }
 
-    // get shops by host id
-    // buscar shops do host por id
-    public List<ShopEntity> getShopsByHostId(Long hostId) {
-        return shopRepository.findByHostId(hostId);
+    public List<ShopResponse> getShopsByHostId(Long hostId) {
+        List<ShopEntity> shops = shopRepository.findByHostId(hostId);
+        return shops.stream()
+                .map(shop -> {
+                    ShopResponse shopResponse = new ShopResponse();
+                    shopResponse.setId(shop.getId());
+                    shopResponse.setName(shop.getName());
+                    shopResponse.setAddress(shop.getAddress());
+                    shopResponse.setDescription(shop.getDescription());
+                    shopResponse.setPhoneNumber(shop.getPhoneNumber());
+                    shopResponse.setOpeningTime(shop.getOpeningTime());
+                    shopResponse.setClosingTime(shop.getClosingTime());
+                    shopResponse.setHostId(shop.getHostId());
+                    shopResponse.setImageUrl(shop.getImageUrl());
+                    shopResponse.setServices(shop.getServices().stream()
+                            .map(service -> {
+                                ServiceResponse serviceResponse = new ServiceResponse();
+                                serviceResponse.setId(service.getId());
+                                serviceResponse.setName(service.getName());
+                                serviceResponse.setPrice(service.getPrice());
+                                serviceResponse.setDuration(service.getDuration());
+                                serviceResponse.setDescription(service.getDescription());
+                                return serviceResponse;
+                            })
+                            .collect(Collectors.toList()));
+                    return shopResponse;
+                })
+                .collect(Collectors.toList());
     }
 
-    // get shop by id
-    public ShopEntity getShopById(Long shopId) {
-        return shopRepository.findById(shopId)
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
-    }
-
-    // update shop
-    // atualizar shop
-    public ShopEntity updateShop(Long shopId, UpdateShopRequestDto updateShopRequestDto, Long hostId) {
-        // Find the shop
+    public ShopResponse getShopById(Long shopId) {
         ShopEntity shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Shop with ID: " + shopId + " not found"));
+        ShopResponse shopResponse = new ShopResponse();
+        shopResponse.setId(shop.getId());
+        shopResponse.setName(shop.getName());
+        shopResponse.setAddress(shop.getAddress());
+        shopResponse.setDescription(shop.getDescription());
+        shopResponse.setPhoneNumber(shop.getPhoneNumber());
+        shopResponse.setOpeningTime(shop.getOpeningTime());
+        shopResponse.setClosingTime(shop.getClosingTime());
+        shopResponse.setHostId(shop.getHostId());
+        shopResponse.setImageUrl(shop.getImageUrl());
+        shopResponse.setServices(shop.getServices().stream()
+                .map(service -> {
+                    ServiceResponse serviceResponse = new ServiceResponse();
+                    serviceResponse.setId(service.getId());
+                    serviceResponse.setName(service.getName());
+                    serviceResponse.setPrice(service.getPrice());
+                    serviceResponse.setDuration(service.getDuration());
+                    serviceResponse.setDescription(service.getDescription());
+                    return serviceResponse;
+                })
+                .collect(Collectors.toList()));
+        return shopResponse;
+    }
 
-        // Verify that the shop belongs to the host
+    public ShopResponse updateShop(Long shopId, UpdateShopRequestDto updateShopRequestDto, Long hostId) {
+        ShopEntity shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new ResourceNotFoundException("Shop with ID: " + shopId + " not found"));
+
         if (!shop.getHostId().equals(hostId)) {
-            throw new RuntimeException("You are not authorized to update this shop");
+            throw new UnauthorizedActionException("You are not authorized to update this shop");
         }
 
-        // Validate times
         LocalTime openingTime = updateShopRequestDto.getOpeningTime();
         LocalTime closingTime = updateShopRequestDto.getClosingTime();
 
         if (closingTime.isBefore(openingTime)) {
-            throw new RuntimeException("Closing time must be after opening time");
+            throw new TimeMismatchException("Closing time must be after opening time");
         }
 
-        // Update shop fields
         shop.setName(updateShopRequestDto.getName());
         shop.setAddress(updateShopRequestDto.getAddress());
         shop.setDescription(updateShopRequestDto.getDescription());
@@ -108,19 +177,40 @@ public class ShopService {
         shop.setImageUrl(updateShopRequestDto.getImageUrl());
         shop.setOpeningTime(openingTime);
         shop.setClosingTime(closingTime);
+        ShopEntity updatedShop = shopRepository.save(shop);
 
-        return shopRepository.save(shop);
+        ShopResponse shopResponse = new ShopResponse();
+        shopResponse.setId(updatedShop.getId());
+        shopResponse.setName(updatedShop.getName());
+        shopResponse.setAddress(updatedShop.getAddress());
+        shopResponse.setDescription(updatedShop.getDescription());
+        shopResponse.setPhoneNumber(updatedShop.getPhoneNumber());
+        shopResponse.setOpeningTime(updatedShop.getOpeningTime());
+        shopResponse.setClosingTime(updatedShop.getClosingTime());
+        shopResponse.setHostId(updatedShop.getHostId());
+        shopResponse.setImageUrl(updatedShop.getImageUrl());
+        shopResponse.setServices(updatedShop.getServices().stream()
+                .map(service -> {
+                    ServiceResponse serviceResponse = new ServiceResponse();
+                    serviceResponse.setId(service.getId());
+                    serviceResponse.setName(service.getName());
+                    serviceResponse.setPrice(service.getPrice());
+                    serviceResponse.setDuration(service.getDuration());
+                    serviceResponse.setDescription(service.getDescription());
+                    return serviceResponse;
+                })
+                .collect(Collectors.toList()));
+        return shopResponse;
     }
 
-    public ShopEntity deleteShop(Long hostId, Long shopId){
+    public void deleteShop(Long hostId, Long shopId){
         ShopEntity shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Shop with ID: " + shopId + " not found"));
 
         if (!hostId.equals(shop.getHostId())){
-            throw new RuntimeException("User does not own the shop");
+            throw new UnauthorizedActionException("User does not own the shop");
         }
 
         shopRepository.delete(shop);
-        return shop;
     }
 }

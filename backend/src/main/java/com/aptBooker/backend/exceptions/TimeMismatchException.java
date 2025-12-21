@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class MismatchPasswordException extends RuntimeException{
-    public MismatchPasswordException(String message){ super(message); }
+public class TimeMismatchException extends RuntimeException{
+    public TimeMismatchException(String message){
+        super(message);
+    }
 }

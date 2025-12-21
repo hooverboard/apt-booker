@@ -1,7 +1,11 @@
 package com.aptBooker.backend.services;
 
+import com.aptBooker.backend.exceptions.ResourceNotFoundException;
+import com.aptBooker.backend.exceptions.ServiceNotFoundInShopException;
+import com.aptBooker.backend.exceptions.UnauthorizedActionException;
 import com.aptBooker.backend.services.dto.request.CreateServiceDto;
 import com.aptBooker.backend.services.dto.request.UpdateServiceRequestDto;
+import com.aptBooker.backend.services.dto.response.ServiceResponse;
 import com.aptBooker.backend.shop.ShopEntity;
 import com.aptBooker.backend.shop.ShopRepository;
 import com.aptBooker.backend.user.UserEntity;
@@ -21,22 +25,27 @@ public class ServiceService {
         this.shopRepository = shopRepository;
     }
 
-    public ServiceEntity createService(CreateServiceDto createServiceDto, Long userId){
+    public ServiceResponse createService(CreateServiceDto createServiceDto, Long userId, String role){
         String name = createServiceDto.getName();
         String description = createServiceDto.getDescription();
         java.math.BigDecimal price = createServiceDto.getPrice();
         Integer duration = createServiceDto.getDuration();
         Long shopId = createServiceDto.getShopId();
 
+        //make sure role is 'host'
+        if(!"host".equals(role)){
+            throw new UnauthorizedActionException("Only hosts can create services");
+        }
+
         //verify shop exists
         ShopEntity shop = shopRepository.findById(shopId).orElse(null);
         if (shop == null) {
-            throw new RuntimeException("Shop not found");
+            throw new ResourceNotFoundException("Shop not found");
         }
 
         //verify user owns the shop
         if (!shop.getHostId().equals(userId)) {
-            throw new RuntimeException("You are not authorized to add services to this shop");
+            throw new UnauthorizedActionException("You are not authorized to add services to this shop");
         }
 
         ServiceEntity service = new ServiceEntity();
@@ -46,10 +55,21 @@ public class ServiceService {
         service.setDuration(duration);
         service.setShop(shop);
 
-        return serviceRepository.save(service);
+        ServiceEntity savedService = serviceRepository.save(service);
+
+        //create dto
+        ServiceResponse serviceResponse = new ServiceResponse();
+        serviceResponse.setId(savedService.getId());
+        serviceResponse.setName(savedService.getName());
+        serviceResponse.setDescription(savedService.getDescription());
+        serviceResponse.setPrice(savedService.getPrice());
+        serviceResponse.setDuration(savedService.getDuration());
+        serviceResponse.setShopId(savedService.getShop().getId());
+
+        return serviceResponse;
     }
 
-    public ServiceEntity updateService(UpdateServiceRequestDto updateServiceRequestDto, Long hostId){
+    public ServiceResponse updateService(UpdateServiceRequestDto updateServiceRequestDto, Long hostId){
         //extract data from dto
         Long id = updateServiceRequestDto.getId();
         String name = updateServiceRequestDto.getName();
@@ -62,18 +82,18 @@ public class ServiceService {
 
         //check if user owns the shop
         ShopEntity shop = shopRepository.findById(shopId)
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Shop not found"));
 
         if (!shop.getHostId().equals(hostId)){
-            throw new RuntimeException("User does not own this shop");
+            throw new UnauthorizedActionException("User does not own this shop");
         }
 
         //check if this service belong to the shop
         ServiceEntity service = serviceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Service not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Service not found"));
 
         if (!service.getShop().getId().equals(shopId)){
-            throw new RuntimeException("Service does not belong to this shop");
+            throw new ServiceNotFoundInShopException("Service does not belong to this shop");
         }
 
         //update the service
@@ -82,18 +102,27 @@ public class ServiceService {
         service.setDuration(duration);
         service.setPrice(price);
 
-        return serviceRepository.save(service);
+        ServiceEntity savedService = serviceRepository.save(service);
+
+        ServiceResponse serviceResponse = new ServiceResponse();
+        serviceResponse.setName(savedService.getName());
+        serviceResponse.setDescription(savedService.getDescription());
+        serviceResponse.setPrice(savedService.getPrice());
+        serviceResponse.setDuration(savedService.getDuration());
+        serviceResponse.setId(savedService.getId());
+        serviceResponse.setShopId(savedService.getShop().getId());
+        return serviceResponse;
     }
 
     public void deleteService(Long serviceId, Long hostId) {
         // get the service
         ServiceEntity service = serviceRepository.findById(serviceId)
-                .orElseThrow(() -> new RuntimeException("Service not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Service not found"));
 
         // check is host owns the shop being deleted
         ShopEntity shop = service.getShop();
         if (!shop.getHostId().equals(hostId)) {
-            throw new RuntimeException("User does not own this shop");
+            throw new UnauthorizedActionException("User does not own this shop");
         }
 
         // delete service

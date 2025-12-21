@@ -1,6 +1,7 @@
 package com.aptBooker.backend.user;
 
 import com.aptBooker.backend.exceptions.InvalidCredentialsException;
+import com.aptBooker.backend.exceptions.MismatchPasswordException;
 import com.aptBooker.backend.exceptions.ResourceNotFoundException;
 import com.aptBooker.backend.exceptions.UserAlreadyExistsException;
 import com.aptBooker.backend.security.JwtUtil;
@@ -28,7 +29,7 @@ public class UserService {
 
     // user registration
     // registrar usuario
-    public UserEntity registerUser(UserRegistrationDto userRegistrationDto){
+    public UserDto registerUser(UserRegistrationDto userRegistrationDto){
 
         // extract user details from dto
         //extrair detalhes do usuario do dto
@@ -41,7 +42,7 @@ public class UserService {
         //check if pw match
         //verificar se as senhas coincidem
         if (!password.equals(confirmPassword)){
-            throw new RuntimeException("Passwords do not match");
+            throw new MismatchPasswordException("Passwords do not match");
         }
 
         //check if user already exists
@@ -57,9 +58,13 @@ public class UserService {
         newUser.setEmail(email);
         newUser.setPassword(password);
         newUser.setRole(role);
-        userRepository.save(newUser);
+        UserEntity savedUser = userRepository.save(newUser);
 
-        return newUser;
+        UserDto userDto = new UserDto();
+        userDto.setId(savedUser.getId());
+        userDto.setName(savedUser.getName());
+        userDto.setEmail(savedUser.getEmail());
+        return userDto;
     }
 
 

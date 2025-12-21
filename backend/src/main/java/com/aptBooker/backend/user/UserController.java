@@ -22,38 +22,17 @@ public class UserController {
 
     // User registration endpoint
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
-        try {
-            UserEntity user = userService.registerUser(userRegistrationDto);
+    public ResponseEntity<UserDto> registerUser(@Valid @RequestBody UserRegistrationDto userRegistrationDto) {
 
-            //convert entity to dto
-            UserDto userDto = new UserDto();
-            userDto.setName(user.getName());
-            userDto.setId(user.getId());
-            userDto.setEmail(user.getEmail());
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
-
-        } catch (RuntimeException e) {
-            UserErrorDto errorDto = new UserErrorDto();
-            errorDto.setErrorMessage(e.getMessage());
-            errorDto.setErrorCode("REGISTRATION_FAILED");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDto);
-        }
+        UserDto createdUser = userService.registerUser(userRegistrationDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     // User login endpoint
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
-        try {
-            AuthResponseDto authResponse = userService.loginUser(userLoginDto);
-            return ResponseEntity.ok(authResponse);
+    public ResponseEntity<AuthResponseDto> loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
 
-        } catch (RuntimeException e) {
-            UserErrorDto errorDto = new UserErrorDto();
-            errorDto.setErrorMessage(e.getMessage());
-            errorDto.setErrorCode("LOGIN_FAILED");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDto);
-        }
+        AuthResponseDto authResponse = userService.loginUser(userLoginDto);
+        return ResponseEntity.ok(authResponse);
     }
 }
