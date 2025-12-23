@@ -34,7 +34,7 @@ public class UserService {
         // extract user details from dto
         //extrair detalhes do usuario do dto
         String name = userRegistrationDto.getName();
-        String email = userRegistrationDto.getEmail();
+        String email = userRegistrationDto.getEmail().toLowerCase();
         String password = userRegistrationDto.getPassword();
         String confirmPassword = userRegistrationDto.getConfirmPassword();
         String role = userRegistrationDto.getRole();
@@ -73,7 +73,7 @@ public class UserService {
 
         // extract user details from dto
         //extrair detalhes do usuario do dto
-        String email = userLoginDto.getEmail();
+        String email = userLoginDto.getEmail().toLowerCase();
         String password = userLoginDto.getPassword();
 
         //check if user exists

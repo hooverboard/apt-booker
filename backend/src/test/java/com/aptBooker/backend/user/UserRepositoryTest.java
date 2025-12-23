@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -28,12 +30,36 @@ class UserRepositoryTest {
                 .password("testpassword")
                 .role("user")
                 .build();
+        userRepository.save(user);
 
         //act
-        UserEntity savedUser = userRepository.save(user);
+        Optional<UserEntity> foundUser = userRepository.findByEmail("testuser@email.com");
+        Optional<UserEntity> userNotFound = userRepository.findByEmail("wrong@email.co");
 
         //assert
-        assertNotNull(savedUser);
-        assertNotNull(savedUser.getId() > 0);
+        assertTrue(foundUser.isPresent());
+        assertEquals("testuser@email.com", foundUser.get().getEmail());
+
+        assertTrue(userNotFound.isEmpty());
+    }
+
+    @Test
+    void UserRepository_ExistsByEmail_ReturnTrueorFalse(){
+
+        //arrange
+        UserEntity user = UserEntity.builder()
+                .name("test user")
+                .email("testuser@email.com")
+                .password("testpassword")
+                .role("user")
+                .build();
+        userRepository.save(user);
+        //act
+        boolean foundUser = userRepository.existsByEmail("testuser@email.com");
+        boolean userNotFound = userRepository.existsByEmail("wrong@email.com");
+
+        //assert
+        assertTrue(foundUser);
+        assertFalse(userNotFound);
     }
 }
