@@ -1,11 +1,17 @@
 package com.aptBooker.backend.user;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserEntity {
 
     @Id
@@ -23,4 +29,6 @@ public class UserEntity {
 
     @Column(nullable = false)
     private String role;
+
+
 }
